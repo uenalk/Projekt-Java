@@ -10,19 +10,22 @@ import java.util.Objects;
 
 
 public class GUI extends Component {
-    private final JButton[][] btnLager0 ;
-    private final JButton[][] btnLager1;
+    private final JButton[][][] btnLager ;
 
     private final JButton btnNaechsterEintrag;
     private final JButton btnUmlagern;
     private final JButton btnVerschrotten;
     private final JButton btnBilanz;
+    private final JButton btnAuftragBearbeiten, getBtnAuftragAblehnen;
 
     private final Label lblBelohnung;
     private final Label lblProduktname;
     private final Label lblAttribut1;
     private final Label lblAttribut2;
     private final Label lblAuftragsart;
+
+    private final JPanel panel,panelAuftrag;
+    private final JButton btnFachA,btnFachB,btnFachC;
 
     int i = 0;
     CSVListe p = new CSVListe();
@@ -48,16 +51,26 @@ public class GUI extends Component {
         btnUmlagern = new JButton("Umlagern");
         btnVerschrotten = new JButton("Verschrotten");
         btnBilanz = new JButton("Bilanz");
+        btnFachA = new JButton("Fach A");
+        btnFachB= new JButton("Fach B");
+        btnFachC = new JButton("Fach C");
+        btnAuftragBearbeiten = new JButton("Auftrag bearbeiten");
+        getBtnAuftragAblehnen = new JButton("Auftrag ablehnen");
 
-        lblBelohnung = new Label("Belohnung");
+        lblBelohnung = new Label("Belohnung: ");
         lblProduktname = new Label("Produktart: ");
         lblAttribut1 = new Label("1.Eigenschaft:");
         lblAttribut2 = new Label("2.Eigenschaft: ");
         lblAuftragsart = new Label("Auftragsart: ");
 
-        btnLager1 = new JButton[4][3];
-        btnLager0 = new JButton[4][3];
+        btnLager = new JButton[4][3][2];
         lager = new Lager();
+
+        panel = new JPanel();
+        panelAuftrag = new JPanel();
+        panelAuftrag.setLayout(new GridLayout(0,2));
+        panelAuftrag.add(btnAuftragBearbeiten);
+        panelAuftrag.add(getBtnAuftragAblehnen);
 
 
         //Panels Außen
@@ -69,30 +82,38 @@ public class GUI extends Component {
 
         //Hinzufügen der Elemente
 
-        belohnung.setLayout(new GridLayout(1,0));
+        belohnung.setLayout(new GridLayout(1,2));
         infos.setLayout(new GridLayout(5,2));
         buttonsAktion.setLayout(new GridLayout(0,4));
 
         belohnung.add(lblBelohnung);
+        belohnung.add(btnBilanz);
+
         infos.add(lblProduktname);
         infos.add(lblAuftragsart);
         infos.add(lblAttribut1);
         infos.add(lblAttribut2);
+        infos.add(panelAuftrag);
 
         buttonsAktion.add(btnNaechsterEintrag);
         buttonsAktion.add(btnUmlagern);
         buttonsAktion.add(btnVerschrotten);
-        buttonsAktion.add(btnBilanz);
+        buttonsAktion.add(panel);
+        panel.setLayout(new GridLayout(3,0));
+        panel.add(btnFachA);
+        panel.add(btnFachB);
+        panel.add(btnFachC);
 
 
-        //Eigenschaften der Elemente
+        //Eigenschaften der Panels
         belohnung.setBackground(Color.gray);
+        btnBilanz.setBackground(Color.gray);
         panel5.setBackground(Color.blue);
 
         panel5.setLayout(new BorderLayout());
 
         belohnung.setPreferredSize(new Dimension(100,50));
-        infos.setPreferredSize(new Dimension(200,100));
+        infos.setPreferredSize(new Dimension(300,100));
         buttonsAktion.setPreferredSize(new Dimension(100,100));
         panel5.setPreferredSize(new Dimension(100,100));
 
@@ -129,10 +150,10 @@ public class GUI extends Component {
             for(Integer i=0;i<4;i++){
                 x1=i.toString();
                 y1=j.toString();
-                btnLager1[i][j]=new JButton(x1+y1+1);
-                btnLager1[i][j].addActionListener(this::ButtonPressed);
-                btnLager1[i][j].setName(x1+y1+1);
-                mainInhalt.add(btnLager1[i][j]);
+                btnLager[i][j][1]=new JButton(x1+y1+1);
+                btnLager[i][j][1].addActionListener(this::ButtonPressed);
+                btnLager[i][j][1].setName(x1+y1+1);
+                mainInhalt.add(btnLager[i][j][1]);
             }
         }
 
@@ -141,10 +162,10 @@ public class GUI extends Component {
             for(Integer i=0;i<4;i++){
                 x0=i.toString();
                 y0=j.toString();
-                btnLager0[i][j]=new JButton(x0+y0+0);
-                btnLager0[i][j].addActionListener(this::ButtonPressed);
-                btnLager0[i][j].setName(x0+y0+0);
-                mainInhalt.add(btnLager0[i][j]);
+                btnLager[i][j][0]=new JButton(x0+y0+0);
+                btnLager[i][j][0].addActionListener(this::ButtonPressed);
+                btnLager[i][j][0].setName(x0+y0+0);
+                mainInhalt.add(btnLager[i][j][0]);
             }
         }
 
