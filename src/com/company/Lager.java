@@ -29,9 +29,13 @@ public class Lager {
         return anzPaletten;
     }
 
-    public Produkte [][][] getLager(int x, int y,int z) {
+    public Produkte [][][] getLager() {
         return Lager;
     }
+    public Produkte getProdukt(int x, int y, int z) {
+        return Lager[x][y][z];
+    }
+
 
     public void insertProduct(int x, int y, int z, Produkte produkte){
         Lager[x][y][z] = produkte;
