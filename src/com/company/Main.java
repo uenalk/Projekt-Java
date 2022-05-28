@@ -10,9 +10,9 @@ import java.util.Scanner;
 public class Main extends JFrame {
 
     public static void main(String[] args)  {
-        //new GUI();
+        new GUI();
 
-        CSVListe p = new CSVListe();
+        /*CSVListe p = new CSVListe();
         List<Produkte> l;
         l= p.getList();
         Scanner sc = new Scanner(System.in);
@@ -81,7 +81,7 @@ public class Main extends JFrame {
                 System.out.printf("Belohnung: %d \n", ab.getBelohnung());
                 System.out.println(" ");
             }
-        }
+        }*/
     }
 
 }

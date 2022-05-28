@@ -9,6 +9,8 @@ public class Abwicklung extends Component {
     private final Lager la;
     private final List<Produkte> l ;
     private int belohnung;
+    private boolean einlagerungErfolgreich;
+    private boolean auslagerungErfolgreich;
 
 
     public Abwicklung() {
@@ -18,11 +20,21 @@ public class Abwicklung extends Component {
         belohnung=0;
     }
 
-    //Muss überprüft werden
+    public Boolean auslagerungErfolgreich(){
+        return auslagerungErfolgreich;
+    }
+
+    public Boolean einlagerungErfolgreich(){
+        return einlagerungErfolgreich;
+    }
+
     public void naechsterEintrag(int i,int x, int y, int z){
         if(Objects.equals(l.get(i).getAuftragsart(), "Einlagerung")){
 
-            if(la.isEmpty(x,y,z)){
+            if(!la.isEmpty(x,y,z)){
+                JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da die Palette nicht leer ist","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE); einlagerungErfolgreich=false;
+
+            }else {
                 if(Objects.equals(l.get(i).getName(),"Holz")){
                     einlagernHolz(i,x,y,z);
                 }else if (Objects.equals(l.get(i).getName(),"Stein")){
@@ -30,24 +42,25 @@ public class Abwicklung extends Component {
                 }else if(Objects.equals(l.get(i).getName(),"Papier")){
                     einlagernPapier(i,x,y,z);
                 }
-
-            }else JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da die Palette nicht leer ist","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE);
+            }
 
 
         }else if(Objects.equals(l.get(i).getAuftragsart(),"Auslagerung")){
 
             if(la.isEmpty(x,y,z)){
-                JOptionPane.showMessageDialog(null,"Auslagerung nicht möglich, da das Lager leer ist","Fehler: Auslagerung",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,"Auslagerung nicht möglich, da die Palette leer ist","Fehler: Auslagerung",JOptionPane.ERROR_MESSAGE); auslagerungErfolgreich=false;
             }
             else{
-                if(la.foundProduct(l.get(i), x,y,z)){
+                if(!la.foundProduct(l.get(i), x,y,z)){
+                    JOptionPane.showMessageDialog(null,"Auslagerung nicht möglich, da das Produkt nicht gefunden wurde","Fehler: Auslagerung",JOptionPane.ERROR_MESSAGE); auslagerungErfolgreich=false;
+                }else{
                     if (Objects.equals(la.getSearchedName(), "Holz")) {
                         auslagernHolz(i,x,y,z);
                     }
                     else {
                         auslagernPapierStein(i,x,y,z);
                     }
-                }else JOptionPane.showMessageDialog(null,"Auslagerung nicht möglich, da das Produkt nicht gefunden wurde","Fehler: Auslagerung",JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }
@@ -102,12 +115,15 @@ public class Abwicklung extends Component {
     public void einlagernHolz(int i, int x, int y, int z){
         if((z == 0 && !la.isEmpty(x, y, 1)||(z==1 && !la.isEmpty(x, y, 0)))){
             System.out.println("Einlagerung nicht möglich ");
-            JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE);
+            einlagerungErfolgreich=false;
+            JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da der Platz nicht ausreicht","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE);
 
         }else {
             la.insertProduct(x, y, 0, l.get(i));
             la.insertProduct(x, y, 1, l.get(i));
             System.out.println("Einlagerung erfolgreich");
+            einlagerungErfolgreich=true;
+            auslagerungErfolgreich=false;
             belohnung += l.get(i).getBelohnung();
         }
     }
@@ -117,41 +133,55 @@ public class Abwicklung extends Component {
         {
             if(!la.isEmpty(x,0,z)||(y!=0)){
                 if(!la.isEmpty(x,0,z)){
-                    JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da die Palette nicht leer ist!","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da der Stein zu schwer ist!","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE);
+                    einlagerungErfolgreich=false;
 
                 }
                 else if ((y!=0)){
                     JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da schwere Steine nur für die unteren Paletten geeignet sind!","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE);
+                    einlagerungErfolgreich=false;
                 }
 
             }else{
                 la.insertProduct(x, y, z, l.get(i));
                 System.out.println("Einlagerung erfolgreich");
+                einlagerungErfolgreich=true;
+                auslagerungErfolgreich=false;
                 belohnung += l.get(i).getBelohnung();
             }
 
         }else if (Objects.equals(l.get(i).getAttribute2(),"Mittel")){
             if((y==0 && !la.isEmpty(x,y,z))||y==1 && !la.isEmpty(x,y,z)||y==2){
                 if(y==0 && !la.isEmpty(x,y,z)){
-                    JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da die unteren Paletten besetzt sind","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da die unteren Paletten besetzt sind","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE);einlagerungErfolgreich=false;
                 }else if(y==1 && !la.isEmpty(x,y,z)){
-                    JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da die mittleren Paletten besetzt sind","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da die mittleren Paletten besetzt sind","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE);einlagerungErfolgreich=false;
                 }else if(y==2){
-                    JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da mittelschwere Paletten nicht oben platziert werden dürfen","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da mittelschwere Paletten nicht oben platziert werden dürfen","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE);einlagerungErfolgreich=false;
                 }
 
             }else{
                 la.insertProduct(x, y, z, l.get(i));
                 System.out.println("Einlagerung erfolgreich");
+                einlagerungErfolgreich=true;
+                auslagerungErfolgreich=false;
                 belohnung += l.get(i).getBelohnung();
             }
 
+        }else if (Objects.equals(l.get(i).getAttribute2(),"Leicht")){
+            la.insertProduct(x, y, z, l.get(i));
+            System.out.println("Einlagerung erfolgreich");
+            einlagerungErfolgreich=true;
+            auslagerungErfolgreich=false;
+            belohnung += l.get(i).getBelohnung();
         }
     }
 
     public void einlagernPapier(int i, int x, int y, int z){
         la.insertProduct(x, y, z, l.get(i));
         System.out.println("Einlagerung erfolgreich");
+        einlagerungErfolgreich=true;
+        auslagerungErfolgreich=false;
         belohnung += l.get(i).getBelohnung();
     }
 
@@ -161,11 +191,15 @@ public class Abwicklung extends Component {
             la.insertProduct(x, y, 0, null);
             belohnung+=l.get(i).getBelohnung();
             System.out.println("Auslagern erfolgreich");
+            auslagerungErfolgreich=true;
+            einlagerungErfolgreich=false;
         }else if (z==1) {
             la.insertProduct(x, y, 1, null);
             la.insertProduct(x, y, 0, null);
             belohnung+=l.get(i).getBelohnung();
             System.out.println("Auslagern erfolgreich");
+            auslagerungErfolgreich=true;
+            einlagerungErfolgreich=false;
         }
     }
 
@@ -175,13 +209,17 @@ public class Abwicklung extends Component {
                 la.insertProduct(x, y, z, null);
                 belohnung+=l.get(i).getBelohnung();
                 System.out.println("Auslagern erfolgreich");
+                auslagerungErfolgreich=true;
+                einlagerungErfolgreich=false;
             }
             else{
-                JOptionPane.showMessageDialog(null,"Auslagerung nicht möglich, da ein anderes Produkt das aktuelle Produkt blockiert","Fehler: Auslagerung",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,"Auslagerung nicht möglich, da ein anderes Produkt das aktuelle Produkt blockiert","Fehler: Auslagerung",JOptionPane.ERROR_MESSAGE);auslagerungErfolgreich=false;
             }
 
         } else {
             la.insertProduct(x,y,z,null); belohnung+=l.get(i).getBelohnung();System.out.println("Auslagern erfolgreich");
+            auslagerungErfolgreich=true;
+            einlagerungErfolgreich=false;
         }
     }
 
@@ -224,6 +262,7 @@ public class Abwicklung extends Component {
                         la.tauscheProdukt(x,y,z,zX,zY,zZ);
                         la.tauscheProdukt(x,y,0,zX,zY,0);
                         System.out.println("Erfolgreich umgelagert");
+                        belohnung-=100;
                     }
                 }else if(z==0&&zZ==1){
                     if(!la.isEmpty(x,y,1)){
@@ -234,6 +273,7 @@ public class Abwicklung extends Component {
                         la.tauscheProdukt(x,y,z,zX,zY,zZ);
                         la.tauscheProdukt(x,y,0,zX,zY,1);
                         System.out.println("Erfolgreich umgelagert");
+                        belohnung-=100;
                     }
                 }else if(z==1&&zZ==0){
                     if(!la.isEmpty(x,y,0)){
@@ -244,6 +284,7 @@ public class Abwicklung extends Component {
                         la.tauscheProdukt(x,y,z,zX,zY,zZ);
                         la.tauscheProdukt(x,y,0,zX,zY,1);
                         System.out.println("Erfolgreich umgelagert");
+                        belohnung-=100;
                     }
                 }else if(z==0 && zZ==0){
                     //tausche
@@ -255,6 +296,7 @@ public class Abwicklung extends Component {
                         la.tauscheProdukt(x,y,z,zX,zY,zZ);
                         la.tauscheProdukt(x,y,0,zX,zY,1);
                         System.out.println("Erfolgreich umgelagert");
+                        belohnung-=100;
                     }
                 }
             }
@@ -294,6 +336,7 @@ public class Abwicklung extends Component {
             la.tauscheProdukt(x,y,1,zX,zY,1);
             la.tauscheProdukt(x,y,0,zX,zY,0);
             System.out.println("Erfolgreich umgelagert");
+            belohnung-=100;
 
         }
     }
@@ -356,6 +399,7 @@ public class Abwicklung extends Component {
                 la.tauscheProdukt(x,y,z,zX,zY,zZ);
                 la.tauscheProdukt(x,y,0,zX,zY,0);
                 System.out.println("Erfolgreich umgelagert");
+                belohnung-=100;
             }
         }else if(z==1&&zZ==0){
             if(!la.isEmpty(x,y,0)){
@@ -365,6 +409,7 @@ public class Abwicklung extends Component {
                 la.tauscheProdukt(x,y,z,zX,zY,zZ);
                 la.tauscheProdukt(x,y,0,zX,zY,1);
                 System.out.println("Erfolgreich umgelagert");
+                belohnung-=100;
             }
         }else if(z==0&&zZ==1){
             if(!la.isEmpty(x,y,1)){
@@ -375,6 +420,7 @@ public class Abwicklung extends Component {
                 la.tauscheProdukt(x,y,z,zX,zY,zZ);
                 la.tauscheProdukt(x,y,1,zX,zY,0);
                 System.out.println("Erfolgreich umgelagert");
+                belohnung-=100;
             }
         }else if(z==0&&zZ==0){
             if(!la.isEmpty(x,y,1)){
@@ -384,6 +430,7 @@ public class Abwicklung extends Component {
                 la.tauscheProdukt(x,y,x,zX,zY,zZ);
                 la.tauscheProdukt(x,y,1,zX,zY,1);
                 System.out.println("Erfolgreich umgelagert");
+                belohnung-=100;
             }
         }
     }
@@ -401,6 +448,7 @@ public class Abwicklung extends Component {
                 la.tauscheProdukt(x,y,z,zX,zY,zZ);
                 la.tauscheProdukt(x,y,0,zX,zY,0);
                 System.out.println("Erfolgreich umgelagert");
+                belohnung-=100;
             }
         }else if(z==0&&zZ==1){
             if(!la.isEmpty(zX,zY,0)){
@@ -411,6 +459,7 @@ public class Abwicklung extends Component {
                 la.tauscheProdukt(x,y,z,zX,zY,zZ);
                 la.tauscheProdukt(x,y,1,zX,zY,0);
                 System.out.println("Erfolgreich umgelagert");
+                belohnung-=100;
             }
         }else if(z==1&&zZ==0){
             if(!la.isEmpty(zX,zY,1)){
@@ -421,6 +470,7 @@ public class Abwicklung extends Component {
                 la.tauscheProdukt(x,y,z,zX,zY,zZ);
                 la.tauscheProdukt(x,y,0,zX,zY,1);
                 System.out.println("Erfolgreich umgelagert");
+                belohnung-=100;
             }
         }else if(z==0 && zZ==0){
             //tausche
@@ -432,6 +482,7 @@ public class Abwicklung extends Component {
                 la.tauscheProdukt(x,y,z,zX,zY,zZ);
                 la.tauscheProdukt(x,y,1,zX,zY,1);
                 System.out.println("Erfolgreich umgelagert");
+                belohnung-=100;
             }
         }
 
@@ -446,12 +497,14 @@ public class Abwicklung extends Component {
                 //tausche
                 la.tauscheProdukt(x,y,z,zX,zY,zZ);
                 System.out.println("Erfolgreich umgelagert");
+                belohnung-=100;
             }
         }else if(z==0&&zZ==1){
             if(x==zX&&y==zY){
                 //tausche
                 la.tauscheProdukt(x,y,z,zX,zY,zZ);
                 System.out.println("Erfolgreich umgelagert");
+                belohnung-=100;
             }else{
                 if(!la.isEmpty(zX,zY,0)){
                     //Vor dem Zielprodukt ist ein anderes Produkt
@@ -460,6 +513,7 @@ public class Abwicklung extends Component {
                     //tausche
                     la.tauscheProdukt(x,y,z,zX,zY,zZ);
                     System.out.println("Erfolgreich umgelagert");
+                    belohnung-=100;
                 }
             }
 
@@ -468,6 +522,7 @@ public class Abwicklung extends Component {
                 //Tausche
                 la.tauscheProdukt(x,y,z,zX,zY,zZ);
                 System.out.println("Erfolgreich umgelagert");
+                belohnung-=100;
             }else{
                 if(!la.isEmpty(x,y,0)){
                     //Aktuelle produkt wird blockiert
@@ -476,12 +531,14 @@ public class Abwicklung extends Component {
                     //tausche
                     la.tauscheProdukt(x,y,z,zX,zY,zZ);
                     System.out.println("Erfolgreich umgelagert");
+                    belohnung-=100;
                 }
             }
         }else if(z==0 && zZ==0) {
             //tausche
             la.tauscheProdukt(x,y,z,zX,zY,zZ);
             System.out.println("Erfolgreich umgelagert");
+            belohnung-=100;
         }
     }
 

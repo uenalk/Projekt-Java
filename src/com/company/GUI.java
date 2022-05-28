@@ -16,7 +16,7 @@ public class GUI extends Component {
     private final JButton btnUmlagern;
     private final JButton btnVerschrotten;
     private final JButton btnBilanz;
-    private final JButton btnAuftragBearbeiten, getBtnAuftragAblehnen;
+    private final JButton btnAuftragBearbeiten, btnAuftragAblehnen;
 
     private final Label lblBelohnung;
     private final Label lblProduktname;
@@ -27,11 +27,12 @@ public class GUI extends Component {
     private final JPanel panel,panelAuftrag;
     private final JButton btnFachA,btnFachB,btnFachC;
 
-    int i = 0;
+    int i;
     CSVListe p = new CSVListe();
     List<Produkte> l;
     Abwicklung aw = new Abwicklung();
     Lager lager;
+    int belohnung;
 
 
     public GUI()
@@ -55,7 +56,7 @@ public class GUI extends Component {
         btnFachB= new JButton("Fach B");
         btnFachC = new JButton("Fach C");
         btnAuftragBearbeiten = new JButton("Auftrag bearbeiten");
-        getBtnAuftragAblehnen = new JButton("Auftrag ablehnen");
+        btnAuftragAblehnen = new JButton("Auftrag ablehnen");
 
         lblBelohnung = new Label("Belohnung: ");
         lblProduktname = new Label("Produktart: ");
@@ -70,7 +71,7 @@ public class GUI extends Component {
         panelAuftrag = new JPanel();
         panelAuftrag.setLayout(new GridLayout(0,2));
         panelAuftrag.add(btnAuftragBearbeiten);
-        panelAuftrag.add(getBtnAuftragAblehnen);
+        panelAuftrag.add(btnAuftragAblehnen);
 
 
         //Panels Außen
@@ -78,7 +79,6 @@ public class GUI extends Component {
         JPanel infos = new JPanel();
         JPanel buttonsAktion = new JPanel();
         JPanel panel5 = new JPanel();
-
 
         //Hinzufügen der Elemente
 
@@ -105,7 +105,8 @@ public class GUI extends Component {
         panel.add(btnFachC);
 
 
-        //Eigenschaften der Panels
+        //Eigenschaften
+        lblBelohnung.setText("Belohnung: "+aw.getBelohnung());
         belohnung.setBackground(Color.gray);
         btnBilanz.setBackground(Color.gray);
         panel5.setBackground(Color.blue);
@@ -157,7 +158,7 @@ public class GUI extends Component {
             }
         }
 
-        String x0,y0,z0;
+        String x0,y0;
         for(Integer j=2; j>-1;j--){
             for(Integer i=0;i<4;i++){
                 x0=i.toString();
@@ -183,10 +184,110 @@ public class GUI extends Component {
         frame.add(buttonsAktion,BorderLayout.SOUTH);
         frame.add(panel5,BorderLayout.CENTER);
 
+        //Startzustände
+        btnBilanz.setEnabled(false);
+        btnAuftragBearbeiten.setEnabled(false);
+        btnVerschrotten.setEnabled(false);
+        btnAuftragBearbeiten.setEnabled(false);
+        btnAuftragAblehnen.setEnabled(false);
+        btnNaechsterEintrag.setEnabled(false);
+        btnUmlagern.setEnabled(false);
+
+        for(Integer j=2; j>-1;j--){
+            for(Integer i=0;i<4;i++){
+                btnLager[i][j][1].setEnabled(false);
+            }
+        }
+
+        for(Integer j=2; j>-1;j--){
+            for(Integer i=0;i<4;i++){
+                btnLager[i][j][0].setEnabled(false);
+            }
+        }
+
+
         //Button action
         btnNaechsterEintrag.addActionListener(this::nextEintrag);
+        btnFachA.addActionListener(this::pressedFachA);
+        btnAuftragAblehnen.addActionListener(this::pressedAblehnen);
+        btnAuftragBearbeiten.addActionListener(this::pressedBearbeiten);
+        btnUmlagern.addActionListener(this::pressedUmlagern);
 
 
+
+    }
+
+    private void pressedUmlagern(ActionEvent e) {
+
+    }
+
+    private void pressedBearbeiten(ActionEvent e) {
+        btnAuftragAblehnen.setBorderPainted(false);
+        btnAuftragAblehnen.setEnabled(false);
+        btnAuftragBearbeiten.setEnabled(false);
+
+        for(Integer j=2; j>-1;j--){
+            for(Integer i=0;i<4;i++){
+                btnLager[i][j][1].setEnabled(true);
+            }
+        }
+
+        for(Integer j=2; j>-1;j--){
+            for(Integer i=0;i<4;i++){
+                btnLager[i][j][0].setEnabled(true);
+            }
+        }
+
+
+        if(lager.getLager()==null){
+            btnUmlagern.setEnabled(true);
+            btnVerschrotten.setEnabled(true);
+            btnUmlagern.setBorderPainted(true);
+            btnVerschrotten.setBorderPainted(true);
+        }
+
+
+    }
+
+    private void pressedAblehnen(ActionEvent e) {
+       belohnung -= l.get(i).getBelohnung();
+       lblBelohnung.setText("Belohnung: "+ belohnung);
+       JOptionPane.showMessageDialog(null,"Als Vertragsstrafe wird die Belohnung vom Kontostand abgezogen","Vertragsstrafe",JOptionPane.INFORMATION_MESSAGE);
+
+        btnAuftragBearbeiten.setBorderPainted(false);
+        btnAuftragAblehnen.setEnabled(false);
+        btnAuftragBearbeiten.setEnabled(false);
+
+
+        btnFachA.setEnabled(true);
+        btnFachB.setEnabled(true);
+        btnFachC.setEnabled(true);
+
+
+        btnFachA.setBorderPainted(true);
+        btnFachB.setBorderPainted(true);
+        btnFachC.setBorderPainted(true);
+
+        btnVerschrotten.setBorderPainted(true);
+        btnUmlagern.setBorderPainted(true);
+        btnNaechsterEintrag.setBorderPainted(true);
+        btnAuftragAblehnen.setBorderPainted(true);
+
+        btnAuftragBearbeiten.setBorderPainted(true);
+
+        i++;
+
+    }
+
+    private void pressedFachA(ActionEvent e) {
+        btnFachB.setEnabled(false);
+        btnFachC.setEnabled(false);
+        btnNaechsterEintrag.setEnabled(true);
+        btnFachA.setEnabled(false);
+
+        //Lässst die Umrandung verschwinden
+        btnFachB.setBorderPainted(false);
+        btnFachC.setBorderPainted(false);
     }
 
 
@@ -197,13 +298,18 @@ public class GUI extends Component {
             lblAuftragsart.setText("Auftragsart: " + l.get(i).getAuftragsart());
             lblAttribut1.setText("1.Eigenschaft: " + l.get(i).getAttribute1());
             lblAttribut2.setText("2.Eigenschaft: " + l.get(i).getAttribute2());
+            btnAuftragBearbeiten.setEnabled(true);
+            btnAuftragAblehnen.setEnabled(true);
+            btnNaechsterEintrag.setEnabled(false);
+            btnUmlagern.setBorderPainted(false);
+            btnVerschrotten.setBorderPainted(false);
+
         }
 
 
     }
 
     public void ButtonPressed(ActionEvent e) {
-        nextEintrag(e);
         var name = ((JButton) e.getSource()).getName();
         int index = Integer.parseInt(name);
         int x = index / 100;
@@ -213,8 +319,137 @@ public class GUI extends Component {
             z = (index % (100 * x)) - (y * 10);
         } else z = index - (y * 10);
 
+        aw.naechsterEintrag(i,x,y,z);
+
+
+
+        if(Objects.equals(l.get(i).getAuftragsart(), "Einlagerung")){
+            if(aw.einlagerungErfolgreich()){
+                if(Objects.equals(l.get(i).getName(), "Holz")){
+                    btnLager[x][y][1].setText(l.get(i).getName()+" "+l.get(i).getAttribute1()+" "+l.get(i).getAttribute2());
+                    btnLager[x][y][0].setText(l.get(i).getName()+" "+l.get(i).getAttribute1()+" "+l.get(i).getAttribute2());
+                }else btnLager[x][y][z].setText(l.get(i).getName()+" "+l.get(i).getAttribute1()+" "+l.get(i).getAttribute2());
+
+                for(Integer j=2; j>-1;j--){
+                    for(Integer i=0;i<4;i++){
+                        btnLager[i][j][1].setEnabled(false);
+                    }
+                }
+
+                for(Integer j=2; j>-1;j--){
+                    for(Integer i=0;i<4;i++){
+                        btnLager[i][j][0].setEnabled(false);
+                    }
+                }
+                btnFachA.setEnabled(true);
+                btnFachB.setEnabled(true);
+                btnFachC.setEnabled(true);
+
+                btnFachA.setBorderPainted(true);
+                btnFachC.setBorderPainted(true);
+                btnFachB.setBorderPainted(true);
+
+                btnVerschrotten.setEnabled(false);
+                btnVerschrotten.setBorderPainted(true);
+
+                btnUmlagern.setEnabled(false);
+                btnUmlagern.setBorderPainted(true);
+
+                btnNaechsterEintrag.setEnabled(false);
+                btnNaechsterEintrag.setBorderPainted(true);
+
+                btnAuftragBearbeiten.setEnabled(false);
+                btnAuftragBearbeiten.setBorderPainted(true);
+
+                btnAuftragAblehnen.setEnabled(false);
+                btnAuftragAblehnen.setBorderPainted(true);
+                i++;
+            }else{
+                for(Integer j=2; j>-1;j--){
+                    for(Integer i=0;i<4;i++){
+                        btnLager[i][j][1].setEnabled(true);
+                    }
+                }
+
+                for(Integer j=2; j>-1;j--){
+                    for(Integer i=0;i<4;i++){
+                        btnLager[i][j][0].setEnabled(true);
+                    }
+                }
+
+                btnFachA.setEnabled(false);
+                btnFachB.setEnabled(false);
+                btnFachC.setEnabled(false);
+
+            }
+        }else if(Objects.equals(l.get(i).getAuftragsart(), "Auslagerung")){
+            if(aw.auslagerungErfolgreich()){
+                if(Objects.equals(l.get(i).getName(), "Holz")){
+                    btnLager[x][y][1].setText(" ");
+                    btnLager[x][y][0].setText(" ");
+                }else btnLager[x][y][z].setText(" ");
+
+                for(Integer j=2; j>-1;j--){
+                    for(Integer i=0;i<4;i++){
+                        btnLager[i][j][1].setEnabled(false);
+                    }
+                }
+
+                for(Integer j=2; j>-1;j--){
+                    for(Integer i=0;i<4;i++){
+                        btnLager[i][j][0].setEnabled(false);
+                    }
+                }
+                btnFachA.setEnabled(true);
+                btnFachB.setEnabled(true);
+                btnFachC.setEnabled(true);
+
+                btnFachA.setBorderPainted(true);
+                btnFachC.setBorderPainted(true);
+                btnFachB.setBorderPainted(true);
+
+                btnVerschrotten.setEnabled(false);
+                btnVerschrotten.setBorderPainted(true);
+
+                btnUmlagern.setEnabled(false);
+                btnUmlagern.setBorderPainted(true);
+
+                btnNaechsterEintrag.setEnabled(false);
+                btnNaechsterEintrag.setBorderPainted(true);
+
+                btnAuftragBearbeiten.setEnabled(false);
+                btnAuftragBearbeiten.setBorderPainted(true);
+
+                btnAuftragAblehnen.setEnabled(false);
+                btnAuftragAblehnen.setBorderPainted(true);
+                i++;
+            }else{
+                for(Integer j=2; j>-1;j--){
+                    for(Integer i=0;i<4;i++){
+                        btnLager[i][j][1].setEnabled(true);
+                    }
+                }
+
+                for(Integer j=2; j>-1;j--){
+                    for(Integer i=0;i<4;i++){
+                        btnLager[i][j][0].setEnabled(true);
+                    }
+                }
+
+                btnFachA.setEnabled(false);
+                btnFachB.setEnabled(false);
+                btnFachC.setEnabled(false);
+
+            }
+        }
+
+
+
+
+
 
     }
+
 }
 
 
