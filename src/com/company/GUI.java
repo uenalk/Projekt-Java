@@ -222,9 +222,9 @@ public class GUI extends Component {
     }
 
     private void pressedBearbeiten(ActionEvent e) {
-        btnAuftragAblehnen.setBorderPainted(false);
-        btnAuftragAblehnen.setEnabled(false);
-        btnAuftragBearbeiten.setEnabled(false);
+        btnAuftragAblehnen.setBorderPainted(true);
+        btnAuftragAblehnen.setEnabled(true);
+        btnAuftragBearbeiten.setEnabled(true);
 
         for(Integer j=2; j>-1;j--){
             for(Integer i=0;i<4;i++){
@@ -237,6 +237,14 @@ public class GUI extends Component {
                 btnLager[i][j][0].setEnabled(true);
             }
         }
+
+
+
+
+
+
+
+
 
 
         if(lager.getLager()==null){
@@ -275,7 +283,25 @@ public class GUI extends Component {
 
         btnAuftragBearbeiten.setBorderPainted(true);
 
+        for(Integer j=2; j>-1;j--){
+            for(Integer i=0;i<4;i++){
+                btnLager[i][j][1].setEnabled(false);
+            }
+        }
+
+        for(Integer j=2; j>-1;j--){
+            for(Integer i=0;i<4;i++){
+                btnLager[i][j][0].setEnabled(false);
+            }
+        }
+
         i++;
+
+        lblBelohnung.setText("Belohnung: ");
+        lblProduktname.setText("Produktart: ");
+        lblAttribut1.setText("1.Eigenschaft:");
+        lblAttribut2.setText("2.Eigenschaft: ");
+        lblAuftragsart.setText("Auftragsart: ");
 
     }
 
@@ -443,10 +469,11 @@ public class GUI extends Component {
             }
         }
 
-
-
-
-
+        lblBelohnung.setText("Belohnung: ");
+        lblProduktname.setText("Produktart: ");
+        lblAttribut1.setText("1.Eigenschaft:");
+        lblAttribut2.setText("2.Eigenschaft: ");
+        lblAuftragsart.setText("Auftragsart: ");
 
     }
 
