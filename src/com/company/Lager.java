@@ -25,27 +25,23 @@ public class Lager {
         return isEmpty;
     }
 
-    public int getAnzPaletten(){
-        return anzPaletten;
-    }
-
     public Produkte [][][] getLager() {
         return Lager;
     }
-    public Produkte getProdukt(int x, int y, int z) {
-        return Lager[x][y][z];
-    }
-
 
     public void insertProduct(int x, int y, int z, Produkte produkte){
         Lager[x][y][z] = produkte;
     }
 
-    public void tauscheProdukt (int x, int y, int z,int xZ, int yZ, int zZ){
-        Lager[x][y][z] = Lager[xZ][yZ][zZ];
-        Lager[xZ][yZ][zZ] = Lager [x][y][z];
+    public Produkte getProdukt(int x, int y, int z) {
+        return Lager[x][y][z];
     }
 
+    public void tauscheProdukt (int x, int y, int z,int xZ, int yZ, int zZ){
+        var temp=Lager[x][y][z] ;
+        Lager[x][y][z]  = Lager[xZ][yZ][zZ];
+        Lager[xZ][yZ][zZ] =temp;
+    }
 
 
     public Boolean foundProduct(Produkte searchElement, int i, int j, int k){
