@@ -19,7 +19,6 @@ public class Abwicklung extends Component {
         l= p.getList();
         belohnung=0;
     }
-
     public Boolean auslagerungErfolgreich(){
         return auslagerungErfolgreich;
     }
@@ -29,54 +28,64 @@ public class Abwicklung extends Component {
     }
 
     public void naechsterEintrag(int i,int x, int y, int z){
-        if(Objects.equals(l.get(i).getAuftragsart(), "Einlagerung")){
 
-            if(!la.isEmpty(x,y,z)){
-                JOptionPane.showMessageDialog(null,"Einlagerung nicht möglich, da die Palette nicht leer ist","Fehler: Einlagerung",JOptionPane.ERROR_MESSAGE); einlagerungErfolgreich=false;
+            if (Objects.equals(l.get(i).getAuftragsart(), "Einlagerung")) {
 
-            }else {
-                if(Objects.equals(l.get(i).getName(),"Holz")){
-                    einlagernHolz(i,x,y,z);
-                }else if (Objects.equals(l.get(i).getName(),"Stein")){
-                    einlagernStein(i,x,y,z);
-                }else if(Objects.equals(l.get(i).getName(),"Papier")){
-                    einlagernPapier(i,x,y,z);
-                }
-            }
+                if (!la.isEmpty(x, y, z)) {
+                    JOptionPane.showMessageDialog(null, "Einlagerung nicht möglich, da die Palette nicht leer ist", "Fehler: Einlagerung", JOptionPane.ERROR_MESSAGE);
+                    einlagerungErfolgreich = false;
 
 
-        }else if(Objects.equals(l.get(i).getAuftragsart(),"Auslagerung")){
-
-            if(la.isEmpty(x,y,z)){
-                JOptionPane.showMessageDialog(null,"Auslagerung nicht möglich, da die Palette leer ist","Fehler: Auslagerung",JOptionPane.ERROR_MESSAGE); auslagerungErfolgreich=false;
-            }
-            else{
-                if(!la.foundProduct(l.get(i), x,y,z)){
-                    JOptionPane.showMessageDialog(null,"Auslagerung nicht möglich, da das Produkt nicht gefunden wurde","Fehler: Auslagerung",JOptionPane.ERROR_MESSAGE); auslagerungErfolgreich=false;
-                }else{
-                    if (Objects.equals(la.getSearchedName(), "Holz")) {
-                        auslagernHolz(i,x,y,z);
+                } else {
+                    if (Objects.equals(l.get(i).getName(), "Holz")) {
+                        einlagernHolz(i, x, y, z);
+                    } else if (Objects.equals(l.get(i).getName(), "Stein")) {
+                        einlagernStein(i, x, y, z);
+                    } else if (Objects.equals(l.get(i).getName(), "Papier")) {
+                        einlagernPapier(i, x, y, z);
                     }
-                    else {
-                        auslagernPapierStein(i,x,y,z);
+                }
+
+
+            } else if (Objects.equals(l.get(i).getAuftragsart(), "Auslagerung")) {
+
+                if (la.isEmpty(x, y, z)) {
+                    JOptionPane.showMessageDialog(null, "Auslagerung nicht möglich, da die Palette leer ist", "Fehler: Auslagerung", JOptionPane.ERROR_MESSAGE);
+                    auslagerungErfolgreich = false;
+                } else {
+                    if (!la.foundProduct(l.get(i), x, y, z)) {
+                        JOptionPane.showMessageDialog(null, "Auslagerung nicht möglich, da das Produkt nicht gefunden wurde", "Fehler: Auslagerung", JOptionPane.ERROR_MESSAGE);
+                        auslagerungErfolgreich = false;
+                    } else {
+                        if (Objects.equals(la.getSearchedName(), "Holz")) {
+                            auslagernHolz(i, x, y, z);
+                        } else {
+                            auslagernPapierStein(i, x, y, z);
+                        }
                     }
                 }
             }
         }
-    }
+
 
     public Integer getBelohnung(){
         return belohnung;
     }
 
-    public void verschrotten(int x, int y, int z){
+    public void verschrotten(int i,int x, int y, int z){
         if(la.isEmpty(x,y,z))
         {
             JOptionPane.showMessageDialog(null,"Prdoukt kann nicht verschrottet werden, da die Palette leer ist.","Fehler: Verschrotten",JOptionPane.ERROR_MESSAGE);
         }else{
+            if(Objects.equals(l.get(i).getName(), "Holz")){
+                la.insertProduct(x,y,1,null);
+                la.insertProduct(x,y,1,null);
+                JOptionPane.showMessageDialog(null, "Das ausgewählte Produkt wurde für 300 Geldeinheiten verschrottet.", "Info: Verschrotten", JOptionPane.INFORMATION_MESSAGE);
+                belohnung -= 300;
+            }else{
             la.insertProduct(x,y,z,null);
             JOptionPane.showMessageDialog(null, "Das ausgewählte Produkt wurde für 300 Geldeinheiten verschrottet.", "Info: Verschrotten", JOptionPane.INFORMATION_MESSAGE);
-            belohnung -= 300;
+            belohnung -= 300;}
         }
 
     }
