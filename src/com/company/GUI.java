@@ -10,7 +10,7 @@ import java.util.Objects;
 
 
 public class GUI extends Component {
-    private final JButton[][][] btnLager ;
+    private final JButton[][][] btnLager;
     private final JButton btnNaechsterEintrag;
     private final JButton btnUmlagern;
     private final JButton btnVerschrotten;
@@ -23,9 +23,11 @@ public class GUI extends Component {
     private final Label lblAttribut2;
     private final Label lblAuftragsart;
     private final Label lblWert;
+    private final Label[] A, B, lblXachse;
 
-    private final JPanel panel,panelAuftrag;
-    private final JButton btnFachA,btnFachB,btnFachC;
+
+    private final JPanel panel, panelAuftrag;
+    private final JButton btnFachA, btnFachB, btnFachC;
 
     int i;
     CSVListe p = new CSVListe();
@@ -40,22 +42,21 @@ public class GUI extends Component {
     boolean btnFlaecheIsPressed;
 
 
-    public GUI()
-    {
-        btnFlaecheIsPressed=false;
-        btnFachAIsPressed=false;
-        btnFachBISPressed=false;
-        btnFachCIsPressed=false;
-        btnBearbeitenIsPressed=false;
-        btnUmlagernIsPressed=false;
-        btnVerschrottenIsPressed=false;
+    public GUI() {
+        btnFlaecheIsPressed = false;
+        btnFachAIsPressed = false;
+        btnFachBISPressed = false;
+        btnFachCIsPressed = false;
+        btnBearbeitenIsPressed = false;
+        btnUmlagernIsPressed = false;
+        btnVerschrottenIsPressed = false;
 
         //Windows
         JFrame frame = new JFrame();
         frame.setTitle("Lagerspiel");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500,500);
-        frame.setLayout(new BorderLayout(10,10));
+        frame.setSize(500, 500);
+        frame.setLayout(new BorderLayout(10, 10));
         frame.setVisible(true);
 
 
@@ -65,7 +66,7 @@ public class GUI extends Component {
         btnVerschrotten = new JButton("Verschrotten");
         btnBilanz = new JButton("Bilanz");
         btnFachA = new JButton("Fach A");
-        btnFachB= new JButton("Fach B");
+        btnFachB = new JButton("Fach B");
         btnFachC = new JButton("Fach C");
         btnAuftragBearbeiten = new JButton("Auftrag bearbeiten");
         btnAuftragAblehnen = new JButton("Auftrag ablehnen");
@@ -76,13 +77,16 @@ public class GUI extends Component {
         lblAttribut2 = new Label("2.Eigenschaft: ");
         lblAuftragsart = new Label("Auftragsart: ");
         lblWert = new Label("Wert: ");
+        A = new Label[3];
+        B = new Label[3];
+        lblXachse = new Label[4];
 
         btnLager = new JButton[4][3][2];
         lager = new Lager();
 
         panel = new JPanel();
         panelAuftrag = new JPanel();
-        panelAuftrag.setLayout(new GridLayout(0,2));
+        panelAuftrag.setLayout(new GridLayout(0, 2));
         panelAuftrag.add(btnAuftragBearbeiten);
         panelAuftrag.add(btnAuftragAblehnen);
 
@@ -95,9 +99,9 @@ public class GUI extends Component {
 
         //Hinzufügen der Elemente
 
-        belohnung.setLayout(new GridLayout(1,2));
-        infos.setLayout(new GridLayout(6,2));
-        buttonsAktion.setLayout(new GridLayout(0,4));
+        belohnung.setLayout(new GridLayout(1, 2));
+        infos.setLayout(new GridLayout(6, 2));
+        buttonsAktion.setLayout(new GridLayout(0, 4));
 
         belohnung.add(lblBelohnung);
         belohnung.add(btnBilanz);
@@ -114,24 +118,24 @@ public class GUI extends Component {
         buttonsAktion.add(btnUmlagern);
         buttonsAktion.add(btnVerschrotten);
         buttonsAktion.add(panel);
-        panel.setLayout(new GridLayout(3,0));
+        panel.setLayout(new GridLayout(3, 0));
         panel.add(btnFachA);
         panel.add(btnFachB);
         panel.add(btnFachC);
 
 
         //Eigenschaften
-        lblBelohnung.setText("Belohnung: "+aw.getBelohnung());
+        lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
         belohnung.setBackground(Color.gray);
         btnBilanz.setBackground(Color.gray);
         panel5.setBackground(Color.blue);
 
         panel5.setLayout(new BorderLayout());
 
-        belohnung.setPreferredSize(new Dimension(100,50));
-        infos.setPreferredSize(new Dimension(300,100));
-        buttonsAktion.setPreferredSize(new Dimension(100,100));
-        panel5.setPreferredSize(new Dimension(100,100));
+        belohnung.setPreferredSize(new Dimension(100, 50));
+        infos.setPreferredSize(new Dimension(300, 100));
+        buttonsAktion.setPreferredSize(new Dimension(100, 100));
+        panel5.setPreferredSize(new Dimension(100, 100));
 
         //------------- sub panels --------------------
 
@@ -151,53 +155,59 @@ public class GUI extends Component {
         mainInhalt.setBackground(Color.white);
 
         panel5.setLayout(new BorderLayout());
-        oben.setPreferredSize(new Dimension(50,50));
-        unten.setPreferredSize(new Dimension(50,50));
-        links.setPreferredSize(new Dimension(50,50));
-        rechts.setPreferredSize(new Dimension(50,50));
-        mainInhalt.setPreferredSize(new Dimension(50,50));
+        oben.setPreferredSize(new Dimension(50, 50));
+        unten.setPreferredSize(new Dimension(50, 50));
+        links.setPreferredSize(new Dimension(50, 50));
+        rechts.setPreferredSize(new Dimension(50, 50));
+        mainInhalt.setPreferredSize(new Dimension(50, 50));
 
-        links.setLayout(new GridLayout(0,1));
-        mainInhalt.setLayout(new GridLayout(6,4));
+        links.setLayout(new GridLayout(0, 1));
+        mainInhalt.setLayout(new GridLayout(6, 5));
 
         //Buttons erzegung
-        String x1,y1;
-        for(Integer j=2; j>-1;j--){
-            for(Integer i=0;i<4;i++){
-                x1=i.toString();
-                y1=j.toString();
-                btnLager[i][j][1]=new JButton(" ");
+        String x1, y1;
+        for (Integer j = 2; j > -1; j--) {
+            A[j] = new Label("Hinten" + " " + (j + 1) + ".Ebene");
+            mainInhalt.add(A[j]);
+            for (Integer i = 0; i < 4; i++) {
+                x1 = i.toString();
+                y1 = j.toString();
+                btnLager[i][j][1] = new JButton(" ");
                 btnLager[i][j][1].addActionListener(this::ButtonPressed);
-                btnLager[i][j][1].setName(x1+y1+1);
+                btnLager[i][j][1].setName(x1 + y1 + 1);
                 mainInhalt.add(btnLager[i][j][1]);
             }
         }
 
-        String x0,y0;
-        for(Integer j=2; j>-1;j--){
-            for(Integer i=0;i<4;i++){
-                x0=i.toString();
-                y0=j.toString();
-                btnLager[i][j][0]=new JButton(" ");
+        String x0, y0;
+        for (Integer j = 2; j > -1; j--) {
+            B[j] = new Label("Vorne" + " " + (j + 1) + ".Ebene");
+            mainInhalt.add(B[j]);
+            for (Integer i = 0; i < 4; i++) {
+
+                x0 = i.toString();
+                y0 = j.toString();
+                btnLager[i][j][0] = new JButton(" ");
                 btnLager[i][j][0].addActionListener(this::ButtonPressed);
-                btnLager[i][j][0].setName(x0+y0+0);
+                btnLager[i][j][0].setName(x0 + y0 + 0);
                 mainInhalt.add(btnLager[i][j][0]);
+
             }
         }
 
 
-        panel5.add(oben,BorderLayout.NORTH);
-        panel5.add(unten,BorderLayout.SOUTH);
-        panel5.add(links,BorderLayout.WEST);
-        panel5.add(rechts,BorderLayout.EAST);
-        panel5.add(mainInhalt,BorderLayout.CENTER);
+        panel5.add(oben, BorderLayout.NORTH);
+        panel5.add(unten, BorderLayout.SOUTH);
+        panel5.add(links, BorderLayout.WEST);
+        panel5.add(rechts, BorderLayout.EAST);
+        panel5.add(mainInhalt, BorderLayout.CENTER);
 
         //------------- sub panels --------------------
 
-        frame.add(belohnung,BorderLayout.NORTH);
-        frame.add(infos,BorderLayout.WEST);
-        frame.add(buttonsAktion,BorderLayout.SOUTH);
-        frame.add(panel5,BorderLayout.CENTER);
+        frame.add(belohnung, BorderLayout.NORTH);
+        frame.add(infos, BorderLayout.WEST);
+        frame.add(buttonsAktion, BorderLayout.SOUTH);
+        frame.add(panel5, BorderLayout.CENTER);
 
         //Startzustände
         btnBilanz.setEnabled(false);
@@ -208,14 +218,14 @@ public class GUI extends Component {
         btnNaechsterEintrag.setEnabled(false);
         btnUmlagern.setEnabled(false);
 
-        for(Integer j=2; j>-1;j--){
-            for(Integer i=0;i<4;i++){
+        for (Integer j = 2; j > -1; j--) {
+            for (Integer i = 0; i < 4; i++) {
                 btnLager[i][j][1].setEnabled(false);
             }
         }
 
-        for(Integer j=2; j>-1;j--){
-            for(Integer i=0;i<4;i++){
+        for (Integer j = 2; j > -1; j--) {
+            for (Integer i = 0; i < 4; i++) {
                 btnLager[i][j][0].setEnabled(false);
             }
         }
@@ -230,7 +240,6 @@ public class GUI extends Component {
         btnAuftragBearbeiten.addActionListener(this::pressedBearbeiten);
         btnUmlagern.addActionListener(this::pressedUmlagern);
         btnVerschrotten.addActionListener(this::pressedVerschrotten);
-
 
 
     }
@@ -255,25 +264,24 @@ public class GUI extends Component {
     }
 
     private void pressedVerschrotten(ActionEvent e) {
-        btnVerschrottenIsPressed=true;
-        for(Integer j=2; j>-1;j--){
-            for(Integer i=0;i<4;i++){
+        btnVerschrottenIsPressed = true;
+        for (Integer j = 2; j > -1; j--) {
+            for (Integer i = 0; i < 4; i++) {
                 btnLager[i][j][1].setEnabled(true);
             }
         }
 
-        for(Integer j=2; j>-1;j--){
-            for(Integer i=0;i<4;i++){
+        for (Integer j = 2; j > -1; j--) {
+            for (Integer i = 0; i < 4; i++) {
                 btnLager[i][j][0].setEnabled(true);
             }
         }
 
 
-
     }
 
     private void pressedUmlagern(ActionEvent e) {
-        btnUmlagernIsPressed=true;
+        btnUmlagernIsPressed = true;
     }
 
     private void pressedBearbeiten(ActionEvent e) {
@@ -282,39 +290,41 @@ public class GUI extends Component {
         btnAuftragBearbeiten.setEnabled(true);
         btnVerschrotten.setEnabled(false);
         btnUmlagern.setEnabled(false);
-        btnBearbeitenIsPressed=true;
+        btnBearbeitenIsPressed = true;
 
         lblProduktname.setText("Produktart: " + l.get(i).getName());
         lblAuftragsart.setText("Auftragsart: " + l.get(i).getAuftragsart());
         lblAttribut1.setText("1.Eigenschaft: " + l.get(i).getAttribute1());
         lblAttribut2.setText("2.Eigenschaft: " + l.get(i).getAttribute2());
-        lblWert.setText("Wert: "+ l.get(i).getBelohnung());
+        lblWert.setText("Wert: " + l.get(i).getBelohnung());
 
-        for(Integer j=2; j>-1;j--){
-            for(Integer i=0;i<4;i++){
+        for (Integer j = 2; j > -1; j--) {
+            for (Integer i = 0; i < 4; i++) {
                 btnLager[i][j][1].setEnabled(true);
             }
         }
 
-        for(Integer j=2; j>-1;j--){
-            for(Integer i=0;i<4;i++){
+        for (Integer j = 2; j > -1; j--) {
+            for (Integer i = 0; i < 4; i++) {
                 btnLager[i][j][0].setEnabled(true);
             }
         }
 
 
-
     }
 
     private void pressedAblehnen(ActionEvent e) {
-        belohnung = aw.getBelohnung()-l.get(i).getBelohnung();
-       lblBelohnung.setText("Belohnung: "+ belohnung);
-       JOptionPane.showMessageDialog(null,"Als Vertragsstrafe wird die Belohnung vom Kontostand abgezogen","Vertragsstrafe",JOptionPane.INFORMATION_MESSAGE);
+        belohnung = aw.getBelohnung() - l.get(i).getBelohnung();
+        lblBelohnung.setText("Belohnung: " + belohnung);
+        JOptionPane.showMessageDialog(null, "Als Vertragsstrafe wird die Belohnung vom Kontostand abgezogen", "Vertragsstrafe", JOptionPane.INFORMATION_MESSAGE);
 
 
         btnFachA.setBorderPainted(true);
         btnFachC.setBorderPainted(true);
         btnFachB.setBorderPainted(true);
+        btnFachA.setEnabled(true);
+        btnFachB.setEnabled(true);
+        btnFachC.setEnabled(true);
 
         btnUmlagern.setEnabled(false);
         btnVerschrotten.setEnabled(false);
@@ -329,14 +339,14 @@ public class GUI extends Component {
         btnAuftragAblehnen.setEnabled(false);
         btnAuftragAblehnen.setBorderPainted(true);
 
-        for(Integer j=2; j>-1;j--){
-            for(Integer i=0;i<4;i++){
+        for (Integer j = 2; j > -1; j--) {
+            for (Integer i = 0; i < 4; i++) {
                 btnLager[i][j][1].setEnabled(false);
             }
         }
 
-        for(Integer j=2; j>-1;j--){
-            for(Integer i=0;i<4;i++){
+        for (Integer j = 2; j > -1; j--) {
+            for (Integer i = 0; i < 4; i++) {
                 btnLager[i][j][0].setEnabled(false);
             }
         }
@@ -347,6 +357,7 @@ public class GUI extends Component {
         lblAttribut1.setText("1.Eigenschaft:");
         lblAttribut2.setText("2.Eigenschaft: ");
         lblAuftragsart.setText("Auftragsart: ");
+        lblWert.setText("Auftragsart: ");
 
     }
 
@@ -354,21 +365,20 @@ public class GUI extends Component {
         btnNaechsterEintrag.setEnabled(true);
         btnUmlagern.setEnabled(true);
         btnVerschrotten.setEnabled(true);
-
-        btnFachB.setBorderPainted(false);
         btnFachC.setBorderPainted(false);
+        btnFachB.setBorderPainted(false);
         btnFachA.setBorderPainted(true);
     }
 
 
     public void nextEintrag(ActionEvent e) {
-        l=p.getList();
-        if(l!=null) {
+        l = p.getList();
+        if (l != null) {
             lblProduktname.setText("Produktart: " + l.get(i).getName());
             lblAuftragsart.setText("Auftragsart: " + l.get(i).getAuftragsart());
             lblAttribut1.setText("1.Eigenschaft: " + l.get(i).getAttribute1());
             lblAttribut2.setText("2.Eigenschaft: " + l.get(i).getAttribute2());
-            lblWert.setText("Wert: "+ l.get(i).getBelohnung());
+            lblWert.setText("Wert: " + l.get(i).getBelohnung());
             btnAuftragBearbeiten.setEnabled(true);
             btnAuftragAblehnen.setEnabled(true);
             btnNaechsterEintrag.setEnabled(true);
@@ -379,7 +389,7 @@ public class GUI extends Component {
     }
 
     public void ButtonPressed(ActionEvent e) {
-        btnFlaecheIsPressed=true;
+        btnFlaecheIsPressed = true;
         var name = ((JButton) e.getSource()).getName();
         int index = Integer.parseInt(name);
         int x = index / 100;
@@ -389,150 +399,151 @@ public class GUI extends Component {
             z = (index % (100 * x)) - (y * 10);
         } else z = index - (y * 10);
 
-        if(btnBearbeitenIsPressed){
-            aw.naechsterEintrag(i,x,y,z);
+        if (btnBearbeitenIsPressed) {
+            aw.naechsterEintrag(i, x, y, z);
 
-                if (Objects.equals(l.get(i).getAuftragsart(), "Einlagerung")) {
-                    if (aw.einlagerungErfolgreich()) {
-                        if (Objects.equals(l.get(i).getName(), "Holz")) {
-                            btnLager[x][y][1].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
-                            btnLager[x][y][0].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
-                        } else
-                            btnLager[x][y][z].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
+            if (Objects.equals(l.get(i).getAuftragsart(), "Einlagerung")) {
+                if (aw.einlagerungErfolgreich()) {
+                    if (Objects.equals(l.get(i).getName(), "Holz")) {
+                        btnLager[x][y][1].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
+                        btnLager[x][y][0].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
+                    } else
+                        btnLager[x][y][z].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
 
-                        for (Integer j = 2; j > -1; j--) {
-                            for (Integer i = 0; i < 4; i++) {
-                                btnLager[i][j][1].setEnabled(false);
-                            }
+                    for (Integer j = 2; j > -1; j--) {
+                        for (Integer i = 0; i < 4; i++) {
+                            btnLager[i][j][1].setEnabled(false);
                         }
-
-                        for (Integer j = 2; j > -1; j--) {
-                            for (Integer i = 0; i < 4; i++) {
-                                btnLager[i][j][0].setEnabled(false);
-                            }
-                        }
-                        btnFachA.setEnabled(true);
-                        btnFachB.setEnabled(true);
-                        btnFachC.setEnabled(true);
-
-                        btnFachA.setBorderPainted(true);
-                        btnFachC.setBorderPainted(true);
-                        btnFachB.setBorderPainted(true);
-
-
-                        btnNaechsterEintrag.setEnabled(false);
-                        btnNaechsterEintrag.setBorderPainted(true);
-
-                        btnAuftragBearbeiten.setEnabled(false);
-                        btnAuftragBearbeiten.setBorderPainted(true);
-
-                        btnAuftragAblehnen.setEnabled(false);
-                        btnAuftragAblehnen.setBorderPainted(true);
-                        i++;
-                    } else {
-                        for (Integer j = 2; j > -1; j--) {
-                            for (Integer i = 0; i < 4; i++) {
-                                btnLager[i][j][1].setEnabled(true);
-                            }
-                        }
-
-                        for (Integer j = 2; j > -1; j--) {
-                            for (Integer i = 0; i < 4; i++) {
-                                btnLager[i][j][0].setEnabled(true);
-                            }
-                        }
-                        btnBearbeitenIsPressed = true;
-
-                        btnFachA.setEnabled(false);
-                        btnFachB.setEnabled(false);
-                        btnFachC.setEnabled(false);
-
                     }
-                } else if (Objects.equals(l.get(i).getAuftragsart(), "Auslagerung")) {
-                    if (aw.auslagerungErfolgreich()) {
-                        if (Objects.equals(l.get(i).getName(), "Holz")) {
-                            btnLager[x][y][1].setText(" ");
-                            btnLager[x][y][0].setText(" ");
-                        } else btnLager[x][y][z].setText(" ");
 
-                        for (Integer j = 2; j > -1; j--) {
-                            for (Integer i = 0; i < 4; i++) {
-                                btnLager[i][j][1].setEnabled(false);
-                            }
+                    for (Integer j = 2; j > -1; j--) {
+                        for (Integer i = 0; i < 4; i++) {
+                            btnLager[i][j][0].setEnabled(false);
                         }
-
-                        for (Integer j = 2; j > -1; j--) {
-                            for (Integer i = 0; i < 4; i++) {
-                                btnLager[i][j][0].setEnabled(false);
-                            }
-                        }
-                        btnFachA.setEnabled(true);
-                        btnFachB.setEnabled(true);
-                        btnFachC.setEnabled(true);
-
-                        btnFachA.setBorderPainted(true);
-                        btnFachC.setBorderPainted(true);
-                        btnFachB.setBorderPainted(true);
-
-                        btnNaechsterEintrag.setEnabled(false);
-                        btnNaechsterEintrag.setBorderPainted(true);
-
-                        btnAuftragBearbeiten.setEnabled(false);
-                        btnAuftragBearbeiten.setBorderPainted(true);
-
-                        btnAuftragAblehnen.setEnabled(false);
-                        btnAuftragAblehnen.setBorderPainted(true);
-                        i++;
-                    } else {
-                        for (Integer j = 2; j > -1; j--) {
-                            for (Integer i = 0; i < 4; i++) {
-                                btnLager[i][j][1].setEnabled(true);
-                            }
-                        }
-
-                        for (Integer j = 2; j > -1; j--) {
-                            for (Integer i = 0; i < 4; i++) {
-                                btnLager[i][j][0].setEnabled(true);
-                            }
-                        }
-
-                        btnBearbeitenIsPressed = true;
-
-                        btnFachA.setEnabled(false);
-                        btnFachB.setEnabled(false);
-                        btnFachC.setEnabled(false);
-
                     }
+                    btnFachA.setEnabled(true);
+                    btnFachB.setEnabled(true);
+                    btnFachC.setEnabled(true);
+
+                    btnFachA.setBorderPainted(true);
+                    btnFachC.setBorderPainted(true);
+                    btnFachB.setBorderPainted(true);
+
+
+                    btnNaechsterEintrag.setEnabled(false);
+                    btnNaechsterEintrag.setBorderPainted(true);
+
+                    btnAuftragBearbeiten.setEnabled(false);
+                    btnAuftragBearbeiten.setBorderPainted(true);
+
+                    btnAuftragAblehnen.setEnabled(false);
+                    btnAuftragAblehnen.setBorderPainted(true);
+
+                    lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
+                    i++;
+                } else {
+                    for (Integer j = 2; j > -1; j--) {
+                        for (Integer i = 0; i < 4; i++) {
+                            btnLager[i][j][1].setEnabled(false);
+                        }
+                    }
+
+                    for (Integer j = 2; j > -1; j--) {
+                        for (Integer i = 0; i < 4; i++) {
+                            btnLager[i][j][0].setEnabled(false);
+                        }
+                    }
+                    btnBearbeitenIsPressed = true;
+
+                    btnFachA.setEnabled(false);
+                    btnFachB.setEnabled(false);
+                    btnFachC.setEnabled(false);
+
                 }
+            } else if (Objects.equals(l.get(i).getAuftragsart(), "Auslagerung")) {
+                if (aw.auslagerungErfolgreich()) {
+                    if (Objects.equals(l.get(i).getName(), "Holz")) {
+                        btnLager[x][y][1].setText(" ");
+                        btnLager[x][y][0].setText(" ");
+                    } else btnLager[x][y][z].setText(" ");
 
-                btnFlaecheIsPressed = false;
-                btnBearbeitenIsPressed = false;
-        }else if (btnVerschrottenIsPressed&&btnFlaecheIsPressed){
-            lblBelohnung.setText("Belohnung: " + (aw.getBelohnung()-300));
-            aw.verschrotten(i,x,y,z);
-            if(l.get(i).getName()=="Holz"){
+                    for (Integer j = 2; j > -1; j--) {
+                        for (Integer i = 0; i < 4; i++) {
+                            btnLager[i][j][1].setEnabled(false);
+                        }
+                    }
+
+                    for (Integer j = 2; j > -1; j--) {
+                        for (Integer i = 0; i < 4; i++) {
+                            btnLager[i][j][0].setEnabled(false);
+                        }
+                    }
+                    btnFachA.setEnabled(true);
+                    btnFachB.setEnabled(true);
+                    btnFachC.setEnabled(true);
+
+                    btnFachA.setBorderPainted(true);
+                    btnFachC.setBorderPainted(true);
+                    btnFachB.setBorderPainted(true);
+
+                    btnNaechsterEintrag.setEnabled(false);
+                    btnNaechsterEintrag.setBorderPainted(true);
+
+                    btnAuftragBearbeiten.setEnabled(false);
+                    btnAuftragBearbeiten.setBorderPainted(true);
+
+                    btnAuftragAblehnen.setEnabled(false);
+                    btnAuftragAblehnen.setBorderPainted(true);
+                    lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
+                    i++;
+                } else {
+                    btnBearbeitenIsPressed = false;
+                    for (Integer j = 2; j > -1; j--) {
+                        for (Integer i = 0; i < 4; i++) {
+                            btnLager[i][j][1].setEnabled(false);
+                        }
+                    }
+
+                    for (Integer j = 2; j > -1; j--) {
+                        for (Integer i = 0; i < 4; i++) {
+                            btnLager[i][j][0].setEnabled(false);
+                        }
+                    }
+
+                    btnBearbeitenIsPressed = true;
+
+                    btnFachA.setEnabled(false);
+                    btnFachB.setEnabled(false);
+                    btnFachC.setEnabled(false);
+
+                }
+            }
+
+            btnFlaecheIsPressed = false;
+            btnBearbeitenIsPressed = false;
+        } else if (btnVerschrottenIsPressed && btnFlaecheIsPressed) {
+            lblBelohnung.setText("Belohnung: " + (aw.getBelohnung() - 300));
+            aw.verschrotten(i, x, y, z);
+            if (l.get(i).getName() == "Holz") {
                 btnLager[x][y][0].setText(" ");
                 btnLager[x][y][1].setText(" ");
-                btnVerschrottenIsPressed=false;
-                btnFlaecheIsPressed=false;
-            }else{
+                btnVerschrottenIsPressed = false;
+                btnFlaecheIsPressed = false;
+            } else {
                 btnLager[x][y][z].setText(" ");
-                btnVerschrottenIsPressed=false;
-                btnFlaecheIsPressed=false;
+                btnVerschrottenIsPressed = false;
+                btnFlaecheIsPressed = false;
             }
 
 
-        }else if(btnUmlagernIsPressed){
+        } else if (btnUmlagernIsPressed) {
 
-            btnUmlagernIsPressed=false;
-            btnFlaecheIsPressed=false;
+            btnUmlagernIsPressed = false;
+            btnFlaecheIsPressed = false;
         }
 
 
-
-
-
-        }
+    }
 
 
 }
