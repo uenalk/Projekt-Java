@@ -7,38 +7,36 @@ import java.util.List;
 
 public class CSVListe {
 
-    public List<Produkte> getList(){
+    public List<Produkte> getList() {
         int attributeID;
         int behlohnung;
 
         List<Produkte> l = new ArrayList<>();
 
         //1.Zeile von CSV Datei überspringen
-        try{
+        try {
             BufferedReader rd = new BufferedReader(new FileReader("src/Leistungsnachweis.csv"));
 
-            for(int i= 0; i<1;i++){
+            for (int i = 0; i < 1; i++) {
                 rd.readLine(); //Skipt 1.Zeile
             }
             String line;
-            for (line = rd.readLine(); line != null; line = rd.readLine())
-            {
+            for (line = rd.readLine(); line != null; line = rd.readLine()) {
                 // Evtl noch ifs mit bedingungen, um leere Zeilen auszugrenzen
-                String [] attribute = line.split(";");
-                attributeID=Integer.parseInt(attribute[0]);
+                String[] attribute = line.split(";");
+                attributeID = Integer.parseInt(attribute[0]);
                 behlohnung = Integer.parseInt(attribute[5]);
-                Produkte p = new Produkte(attributeID,attribute[1],attribute[2],attribute[3],attribute[4],behlohnung);
+                Produkte p = new Produkte(attributeID, attribute[1], attribute[2], attribute[3], attribute[4], behlohnung);
                 l.add(p);
 
 
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e);
         }
 
         return l;
     }
-
 
 
 }
