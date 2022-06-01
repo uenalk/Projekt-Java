@@ -40,6 +40,8 @@ public class GUI extends Component {
     boolean btnVerschrottenIsPressed;
     boolean btnFachAIsPressed, btnFachBISPressed, btnFachCIsPressed;
     boolean btnFlaecheIsPressed;
+    int vX, vY, vZ;
+    boolean waehlequelle;
 
 
     public GUI() {
@@ -57,7 +59,6 @@ public class GUI extends Component {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 500);
         frame.setLayout(new BorderLayout(10, 10));
-        frame.setVisible(true);
 
 
         //Objekt erzeugung
@@ -241,6 +242,9 @@ public class GUI extends Component {
         btnUmlagern.addActionListener(this::pressedUmlagern);
         btnVerschrotten.addActionListener(this::pressedVerschrotten);
 
+        frame.setSize(1000, 1000);
+        frame.setVisible(true);
+
 
     }
 
@@ -282,6 +286,19 @@ public class GUI extends Component {
 
     private void pressedUmlagern(ActionEvent e) {
         btnUmlagernIsPressed = true;
+        waehlequelle = true;
+        for (Integer j = 2; j > -1; j--) {
+            for (Integer i = 0; i < 4; i++) {
+                btnLager[i][j][1].setEnabled(true);
+            }
+        }
+
+        for (Integer j = 2; j > -1; j--) {
+            for (Integer i = 0; i < 4; i++) {
+                btnLager[i][j][0].setEnabled(true);
+            }
+        }
+
     }
 
     private void pressedBearbeiten(ActionEvent e) {
@@ -407,8 +424,11 @@ public class GUI extends Component {
                     if (Objects.equals(l.get(i).getName(), "Holz")) {
                         btnLager[x][y][1].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
                         btnLager[x][y][0].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
-                    } else
+                    } else if (Objects.equals(l.get(i).getName(), "Papier")) {
                         btnLager[x][y][z].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
+                    } else if (Objects.equals(l.get(i).getName(), "Stein")) {
+                        btnLager[x][y][z].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
+                    }
 
                     for (Integer j = 2; j > -1; j--) {
                         for (Integer i = 0; i < 4; i++) {
@@ -454,10 +474,11 @@ public class GUI extends Component {
                         }
                     }
                     btnBearbeitenIsPressed = true;
-
-                    btnFachA.setEnabled(false);
-                    btnFachB.setEnabled(false);
-                    btnFachC.setEnabled(false);
+                    btnUmlagern.setEnabled(true);
+                    btnVerschrotten.setEnabled(true);
+                    btnFachA.setEnabled(true);
+                    btnFachB.setEnabled(true);
+                    btnFachC.setEnabled(true);
 
                 }
             } else if (Objects.equals(l.get(i).getAuftragsart(), "Auslagerung")) {
@@ -511,10 +532,11 @@ public class GUI extends Component {
                     }
 
                     btnBearbeitenIsPressed = true;
-
-                    btnFachA.setEnabled(false);
-                    btnFachB.setEnabled(false);
-                    btnFachC.setEnabled(false);
+                    btnUmlagern.setEnabled(true);
+                    btnVerschrotten.setEnabled(true);
+                    btnFachA.setEnabled(true);
+                    btnFachB.setEnabled(true);
+                    btnFachC.setEnabled(true);
 
                 }
             }
@@ -523,8 +545,8 @@ public class GUI extends Component {
             btnBearbeitenIsPressed = false;
         } else if (btnVerschrottenIsPressed && btnFlaecheIsPressed) {
             lblBelohnung.setText("Belohnung: " + (aw.getBelohnung() - 300));
-            aw.verschrotten(i, x, y, z);
-            if (l.get(i).getName() == "Holz") {
+            aw.verschrotten(i,x, y, z);
+            if (btnLager[x][y][z].getText().charAt(0)== 'H') {
                 btnLager[x][y][0].setText(" ");
                 btnLager[x][y][1].setText(" ");
                 btnVerschrottenIsPressed = false;
@@ -536,17 +558,108 @@ public class GUI extends Component {
             }
 
 
-        } else if (btnUmlagernIsPressed) {
+            //
+        } else if (btnUmlagernIsPressed && waehlequelle) {
+            vX = x;
+            vY = y;
+            vZ = z;
+            waehlequelle = false;
 
+        } else if (btnUmlagernIsPressed && !waehlequelle) { //Soll bearbeitet werden
+            aw.umlagern(vX, vY, vZ, x, y, z);
+            if (aw.umlagernErfolgreich()) {
+                if (btnLager[vX][vY][vZ].getText().charAt(0) != 'H') {
+                    if (btnLager[x][y][z].getText().charAt(0) != 'H') {
+                        var temp = btnLager[vX][vY][vZ].getText();
+                        btnLager[vX][vY][vZ].setText(btnLager[x][y][z].getText());
+                        btnLager[x][y][z].setText(temp);
+                    } else {
+                        if (z == 0 && vZ == 0) {
+                            var temp = btnLager[vX][vY][vZ].getText();
+                            btnLager[vX][vY][0].setText(btnLager[x][y][z].getText());
+                            btnLager[x][y][z].setText(temp);
+                            btnLager[vX][vY][1].setText(btnLager[vX][vY][vZ].getText());
+                            btnLager[x][y][1].setText(" ");
+
+                        } else if (z == 0 && vZ == 1) {
+                            var vorher = btnLager[vX][vY][vZ].getText();
+                            var aktuell = btnLager[x][y][z].getText();
+                            btnLager[vX][vY][1].setText(aktuell);
+                            btnLager[x][y][z].setText(vorher);
+                            btnLager[vX][vY][0].setText(aktuell);
+                            btnLager[x][y][1].setText(" ");
+                        } else if (z == 1 && vZ == 0) {
+                            var temp = btnLager[vX][vY][vZ].getText();
+                            btnLager[vX][vY][0].setText(btnLager[x][y][z].getText());
+                            btnLager[x][y][z].setText(temp);
+                            btnLager[vX][vY][1].setText(btnLager[vX][vY][vZ].getText());
+                            btnLager[x][y][0].setText(" ");
+
+                        } else if (z == 1 && vZ == 1) {
+                            var temp = btnLager[vX][vY][vZ].getText();
+                            btnLager[vX][vY][1].setText(btnLager[x][y][z].getText());
+                            btnLager[x][y][z].setText(temp);
+                            btnLager[vX][vY][0].setText(btnLager[vX][vY][vZ].getText());
+                            btnLager[x][y][0].setText(" ");
+
+                        }
+                    }
+                } else {
+                    if (btnLager[x][y][z].getText().charAt(0) != 'H') {
+                        if (z == 0 && vZ == 0) {
+                            var vorher = btnLager[vX][vY][vZ].getText();
+                            var aktuell = btnLager[x][y][z].getText();
+                            btnLager[vX][vY][0].setText(aktuell);
+                            btnLager[vX][vY][1].setText(" ");
+                            btnLager[x][y][0].setText(vorher);
+                            btnLager[x][y][1].setText(vorher);
+
+
+                        } else if (z == 0 && vZ == 1) {
+                            var vorher = btnLager[vX][vY][vZ].getText();
+                            var aktuell = btnLager[x][y][z].getText();
+                            btnLager[vX][vY][0].setText(" ");
+                            btnLager[vX][vY][1].setText(aktuell);
+                            btnLager[x][y][0].setText(vorher);
+                            btnLager[x][y][1].setText(vorher);
+                        } else if (z == 1 && vZ == 0) {
+                            var vorher = btnLager[vX][vY][vZ].getText();
+                            var aktuell = btnLager[x][y][z].getText();
+                            btnLager[x][y][z].setText(vorher);
+                            btnLager[x][y][z].setText(aktuell);
+
+                        } else if (z == 1 && vZ == 1) {
+                            var vorher = btnLager[vX][vY][vZ].getText();
+                            var aktuell = btnLager[x][y][z].getText();
+                            btnLager[vX][vY][1].setText(aktuell);
+                            btnLager[vX][vY][0].setText(" ");
+                            btnLager[x][y][0].setText(vorher);
+                            btnLager[x][y][1].setText(vorher);
+
+                        }
+
+                    } else {
+                        var vorher = btnLager[vX][vY][vZ].getText();
+                        var aktuell = btnLager[x][y][z].getText();
+                        btnLager[vX][vY][1].setText(aktuell);
+                        btnLager[vX][vY][0].setText(aktuell);
+
+                        btnLager[x][y][0].setText(vorher);
+                        btnLager[x][y][1].setText(vorher);
+                    }
+                }
+
+            }
             btnUmlagernIsPressed = false;
-            btnFlaecheIsPressed = false;
         }
 
 
     }
-
-
 }
+
+
+
+
 
 
 
