@@ -11,6 +11,7 @@ public class Abwicklung extends Component {
     private int belohnung;
     private boolean einlagerungErfolgreich;
     private boolean auslagerungErfolgreich;
+    private boolean umlagernErfolgreich;
 
 
     public Abwicklung() {
@@ -18,6 +19,10 @@ public class Abwicklung extends Component {
         la = new Lager();
         l = p.getList();
         belohnung = 0;
+    }
+
+    public Boolean umlagernErfolgreich() {
+        return umlagernErfolgreich;
     }
 
     public Boolean auslagerungErfolgreich() {
@@ -79,7 +84,7 @@ public class Abwicklung extends Component {
         } else {
             if (Objects.equals(l.get(i).getName(), "Holz")) {
                 la.insertProduct(x, y, 1, null);
-                la.insertProduct(x, y, 1, null);
+                la.insertProduct(x, y, 0, null);
                 JOptionPane.showMessageDialog(null, "Das ausgewählte Produkt wurde für 300 Geldeinheiten verschrottet.", "Info: Verschrotten", JOptionPane.INFORMATION_MESSAGE);
                 belohnung -= 300;
             } else {
@@ -89,33 +94,6 @@ public class Abwicklung extends Component {
             }
         }
 
-    }
-
-
-    public void umlagern(int x, int y, int z, int zX, int zY, int zZ) { //Muss gemacht werden
-        //Produkt auswählen
-        if (la.isEmpty(x, y, z)) {
-            JOptionPane.showMessageDialog(null, "Die Palette ist leer.", "Fehler: Umlagern", JOptionPane.ERROR_MESSAGE);
-        } else {
-            //Aktueles Produkt Papier
-            if (Objects.equals(la.getProdukt(x, y, z).getName(), "Papier")) {
-                aktProduktPapier(x, y, z, zX, zY, zZ);
-            }
-
-
-            //Aktuelles Produkt Holz
-            else if (Objects.equals(la.getProdukt(x, y, z).getName(), "Holz")) {
-                aktProduktHolz(x, y, z, zX, zY, zZ);
-
-            }
-
-
-            //Aktuelles Produkt Stein
-            else if (Objects.equals(la.getProdukt(x, y, z).getName(), "Stein")) {
-                aktProduktStein(x, y, z, zX, zY, zZ);
-
-            }
-        }
     }
 
 
@@ -193,6 +171,7 @@ public class Abwicklung extends Component {
         auslagerungErfolgreich = false;
         belohnung += l.get(i).getBelohnung();
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     public void auslagernHolz(int i, int x, int y, int z) {
         if (z == 0) {
@@ -233,6 +212,37 @@ public class Abwicklung extends Component {
             einlagerungErfolgreich = false;
         }
     }
+    //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    public void umlagern(int x, int y, int z, int zX, int zY, int zZ) { //Muss gemacht werden
+        //Produkt auswählen
+
+        if(la.isEmpty(x,y,z)){
+            JOptionPane.showMessageDialog(null, "Die ausgewählte Palette ist leer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+            umlagernErfolgreich=false;
+
+        }else{
+            //Aktueles Produkt Papier
+            if (Objects.equals(la.getProdukt(x, y, z).getName(), "Papier")) {
+                aktProduktPapier(x, y, z, zX, zY, zZ);
+            }
+
+
+            //Aktuelles Produkt Holz
+            else if (Objects.equals(la.getProdukt(x, y, z).getName(), "Holz")) {
+                aktProduktHolz(x, y, z, zX, zY, zZ);
+
+            }
+
+
+            //Aktuelles Produkt Stein
+            else if (Objects.equals(la.getProdukt(x, y, z).getName(), "Stein")) {
+                aktProduktStein(x, y, z, zX, zY, zZ);
+
+            }
+        }
+
+
+    }
 
     public void aktProduktPapier(int x, int y, int z, int zX, int zY, int zZ) {
         //Zielprodukt Papier
@@ -246,13 +256,15 @@ public class Abwicklung extends Component {
                 if (y != 0) {
                     //Stein zu schwer, kann  nicht getauscht werden
                     JOptionPane.showMessageDialog(null, "Stein zu schwer, kann  nicht getauscht werden", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     uberprufenProduktWieBeiPapier(x, y, z, zX, zY, zZ);
                 }
             } else if (Objects.equals(la.getProdukt(zX, zY, zZ).getAttribute2(), "Mittel")) {
                 if (y == 2) {
                     //Fehler Produkt zu schwer
-                    JOptionPane.showMessageDialog(null, "Prdoukt zu schwer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Produkt zu schwer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
 
                 } else {
                     uberprufenProduktWieBeiPapier(x, y, z, zX, zY, zZ);
@@ -268,33 +280,39 @@ public class Abwicklung extends Component {
                 if (!la.isEmpty(x, y, 0)) {
                     //Vor dem Zielprodukt ist ein anderes Produkt
                     JOptionPane.showMessageDialog(null, "Vor dem Zielprodukt ist ein anderes Produkt", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     //tausche
                     la.tauscheProdukt(x, y, z, zX, zY, zZ);
                     la.tauscheProdukt(x, y, 0, zX, zY, 0);
                     System.out.println("Erfolgreich umgelagert");
                     belohnung -= 100;
+                    umlagernErfolgreich = true;
                 }
             } else if (z == 0 && zZ == 1) {
                 if (!la.isEmpty(x, y, 1)) {
                     //Hinter dem Produkt befindet sich noch ein Produkt
                     JOptionPane.showMessageDialog(null, "Hinter dem Produkt befindet sich noch ein Produkt", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     //tausche
                     la.tauscheProdukt(x, y, z, zX, zY, zZ);
                     la.tauscheProdukt(x, y, 0, zX, zY, 1);
                     System.out.println("Erfolgreich umgelagert");
+                    umlagernErfolgreich = true;
                     belohnung -= 100;
                 }
             } else if (z == 1 && zZ == 0) {
                 if (!la.isEmpty(x, y, 0)) {
                     //Vor dem ausgewählten Produkt ist ein anderes Produkt
                     JOptionPane.showMessageDialog(null, "Vor dem ausgewählten Produkt ist ein anderes Produkt", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     //tausche
                     la.tauscheProdukt(x, y, z, zX, zY, zZ);
                     la.tauscheProdukt(x, y, 0, zX, zY, 1);
                     System.out.println("Erfolgreich umgelagert");
+                    umlagernErfolgreich = true;
                     belohnung -= 100;
                 }
             } else if (z == 0 && zZ == 0) {
@@ -302,16 +320,17 @@ public class Abwicklung extends Component {
                 if (!la.isEmpty(x, y, 1)) {
                     //Hinter dem ausgewählten Produkt befindet sich noch ein Produkt
                     JOptionPane.showMessageDialog(null, "Hinter dem Produkt befindet sich noch ein Produkt", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     //tausche
                     la.tauscheProdukt(x, y, z, zX, zY, zZ);
-                    la.tauscheProdukt(x, y, 0, zX, zY, 1);
+                    la.tauscheProdukt(zX, zY, 1, x, y, 1);
                     System.out.println("Erfolgreich umgelagert");
+                    umlagernErfolgreich = true;
                     belohnung -= 100;
                 }
             }
         }
-
 
     }
 
@@ -327,6 +346,7 @@ public class Abwicklung extends Component {
                 if (y != 0) {
                     //Stein zu schwer, kann  nicht getauscht werden
                     JOptionPane.showMessageDialog(null, "Produkt zu schwer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     uberprufenProduktBeiHolz(x, y, z, zX, zY, zZ);
                 }
@@ -334,6 +354,7 @@ public class Abwicklung extends Component {
                 if (y == 2) {
                     //Fehler Produkt zu schwer
                     JOptionPane.showMessageDialog(null, "Produkt zu schwer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     uberprufenProduktBeiHolz(x, y, z, zX, zY, zZ);
                 }
@@ -347,6 +368,7 @@ public class Abwicklung extends Component {
             la.tauscheProdukt(x, y, 1, zX, zY, 1);
             la.tauscheProdukt(x, y, 0, zX, zY, 0);
             System.out.println("Erfolgreich umgelagert");
+            umlagernErfolgreich = true;
             belohnung -= 100;
 
         }
@@ -359,6 +381,7 @@ public class Abwicklung extends Component {
                 if (zY != 0) {
                     //Der Stein ist viel zu schwer für eine höhere Ebene
                     JOptionPane.showMessageDialog(null, "Produkt zu schwer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     uberprufenProduktWieBeiPapier(x, y, z, zX, zY, zZ);
                 }
@@ -366,6 +389,7 @@ public class Abwicklung extends Component {
                 if (y == 2) {
                     //Der Stein ist viel zu schwer für eine höhere Ebene
                     JOptionPane.showMessageDialog(null, "Produkt zu schwer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     uberprufenProduktWieBeiPapier(x, y, z, zX, zY, zZ);
                 }
@@ -376,7 +400,45 @@ public class Abwicklung extends Component {
 
         //Zielprodukt Stein
         if (Objects.equals(la.getProdukt(zX, zY, zZ).getName(), "Stein")) {
-            uberprufenProduktWieBeiPapier(x, y, z, zX, zY, zZ);
+            if (Objects.equals(la.getProdukt(x, y, z).getAttribute2(), "Schwer")) {
+                if (zY != 0) {
+                    //Der Stein ist viel zu schwer für eine höhere Ebene
+                    JOptionPane.showMessageDialog(null, "Produkt zu schwer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
+                } else {
+                    uberprufenProduktWieBeiPapier(x, y, z, zX, zY, zZ);
+                }
+            } else if (Objects.equals(la.getProdukt(x, y, z).getAttribute2(), "Mittel")) {
+                if (zY == 2) {
+                    //Der Stein ist viel zu schwer für eine höhere Ebene
+                    JOptionPane.showMessageDialog(null, "Produkt zu schwer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
+                } else {
+                    uberprufenProduktWieBeiPapier(x, y, z, zX, zY, zZ);
+                }
+            } else {
+                if(Objects.equals(la.getProdukt(zX, zY, zZ).getAttribute2(), "Schwer")){
+                    if(y!=0){
+                        //Fehler
+                        JOptionPane.showMessageDialog(null, "Produkt zu schwer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                        umlagernErfolgreich = false;
+                    }
+                    else{
+                        uberprufenProduktWieBeiPapier(x, y, z, zX, zY, zZ);
+                    }
+                }else if(Objects.equals(la.getProdukt(zX, zY, zZ).getAttribute2(), "Mittel")){
+                    if(y==2){
+                        //Fehler
+                        JOptionPane.showMessageDialog(null, "Produkt zu schwer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                        umlagernErfolgreich = false;
+                    }
+                    else{
+                        uberprufenProduktWieBeiPapier(x, y, z, zX, zY, zZ);
+                    }
+                }else{
+                    uberprufenProduktWieBeiPapier(x,y,z,zX, zY,zZ);
+                }
+            }
         }
 
         //Zielprodukt Holz
@@ -385,6 +447,7 @@ public class Abwicklung extends Component {
                 if (zY != 0) {
                     //Der Stein ist viel zu schwer für eine höhere Ebene
                     JOptionPane.showMessageDialog(null, "Produkt zu schwer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     uberprufenHolzZuStein(x, y, z, zX, zY, zZ);
                 }
@@ -392,6 +455,7 @@ public class Abwicklung extends Component {
                 if (y == 2) {
                     //Der Stein ist viel zu schwer für eine höhere Ebene
                     JOptionPane.showMessageDialog(null, "Produkt zu schwer", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     uberprufenHolzZuStein(x, y, z, zX, zY, zZ);
                 }
@@ -408,40 +472,48 @@ public class Abwicklung extends Component {
             if (!la.isEmpty(x, y, 0)) {
                 //Das ausgewählte Produkt wird von einem anderen Produkt blockiert
                 JOptionPane.showMessageDialog(null, "Das ausgewählte Produkt wird von einem anderen Produkt blockiert", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                umlagernErfolgreich = false;
             } else {
                 la.tauscheProdukt(x, y, z, zX, zY, zZ);
                 la.tauscheProdukt(x, y, 0, zX, zY, 0);
                 System.out.println("Erfolgreich umgelagert");
+                umlagernErfolgreich = true;
                 belohnung -= 100;
             }
         } else if (z == 1 && zZ == 0) {
             if (!la.isEmpty(x, y, 0)) {
                 //Das ausgewählte Produkt wird von einem anderen Produkt blockiert
                 JOptionPane.showMessageDialog(null, "Das ausgewählte Produkt wird von einem anderen Produkt blockiert", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                umlagernErfolgreich = false;
             } else {
                 la.tauscheProdukt(x, y, z, zX, zY, zZ);
                 la.tauscheProdukt(x, y, 0, zX, zY, 1);
                 System.out.println("Erfolgreich umgelagert");
+                umlagernErfolgreich = true;
                 belohnung -= 100;
             }
         } else if (z == 0 && zZ == 1) {
             if (!la.isEmpty(x, y, 1)) {
                 //Hinter dem Prdoukt befindet sich ein anderes Produkt
                 JOptionPane.showMessageDialog(null, "Hinter dem Produkt befindet sich ein anderes Produkt und Holz braucht 2 Paletten platz für das Umlagern", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                umlagernErfolgreich = false;
             } else {
                 la.tauscheProdukt(x, y, z, zX, zY, zZ);
                 la.tauscheProdukt(x, y, 1, zX, zY, 0);
                 System.out.println("Erfolgreich umgelagert");
+                umlagernErfolgreich = true;
                 belohnung -= 100;
             }
         } else if (z == 0 && zZ == 0) {
             if (!la.isEmpty(x, y, 1)) {
                 //Hinter dem ausgewählten Prdoukt befindet sich ein anderes Produkt
                 JOptionPane.showMessageDialog(null, "Hinter dem Produkt befindet sich ein anderes Produkt und Holz braucht 2 Paletten platz für das Umlagern", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                umlagernErfolgreich = false;
             } else {
-                la.tauscheProdukt(x, y, x, zX, zY, zZ);
+                la.tauscheProdukt(x, y, z, zX, zY, zZ);
                 la.tauscheProdukt(x, y, 1, zX, zY, 1);
                 System.out.println("Erfolgreich umgelagert");
+                umlagernErfolgreich = true;
                 belohnung -= 100;
             }
         }
@@ -453,33 +525,39 @@ public class Abwicklung extends Component {
             if (!la.isEmpty(zX, zY, 0)) {
                 //Vor dem Zielprodukt ist ein anderes Produkt
                 JOptionPane.showMessageDialog(null, "Das ausgewählte Produkt wird von einem anderen Produkt blockiert", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                umlagernErfolgreich = false;
             } else {
                 //tausche
                 la.tauscheProdukt(x, y, z, zX, zY, zZ);
                 la.tauscheProdukt(x, y, 0, zX, zY, 0);
                 System.out.println("Erfolgreich umgelagert");
+                umlagernErfolgreich = true;
                 belohnung -= 100;
             }
         } else if (z == 0 && zZ == 1) {
             if (!la.isEmpty(zX, zY, 0)) {
                 //Vor dem Zielprodukt ist ein anderes Produkt
                 JOptionPane.showMessageDialog(null, "Das ausgewählte Produkt wird von einem anderen Produkt blockiert", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                umlagernErfolgreich = false;
             } else {
                 //tausche
                 la.tauscheProdukt(x, y, z, zX, zY, zZ);
                 la.tauscheProdukt(x, y, 1, zX, zY, 0);
                 System.out.println("Erfolgreich umgelagert");
+                umlagernErfolgreich = true;
                 belohnung -= 100;
             }
         } else if (z == 1 && zZ == 0) {
             if (!la.isEmpty(zX, zY, 1)) {
                 //Hinter dem Zielprodukt befindet sich ein anderes Produkt
                 JOptionPane.showMessageDialog(null, "Hinter dem Produkt befindet sich ein anderes Produkt und Holz braucht 2 Paletten platz für das Umlagern", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                umlagernErfolgreich = false;
             } else {
                 //tausche
                 la.tauscheProdukt(x, y, z, zX, zY, zZ);
                 la.tauscheProdukt(x, y, 0, zX, zY, 1);
                 System.out.println("Erfolgreich umgelagert");
+                umlagernErfolgreich = true;
                 belohnung -= 100;
             }
         } else if (z == 0 && zZ == 0) {
@@ -487,11 +565,13 @@ public class Abwicklung extends Component {
             if (!la.isEmpty(zX, zY, 1)) {
                 //Hinter dem ausgewählten Produkt befindet sich noch ein Produkt
                 JOptionPane.showMessageDialog(null, "Hinter dem Produkt befindet sich ein anderes Produkt und Holz braucht 2 Paletten platz für das Umlagern", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                umlagernErfolgreich = false;
             } else {
                 //tausche
                 la.tauscheProdukt(x, y, z, zX, zY, zZ);
                 la.tauscheProdukt(x, y, 1, zX, zY, 1);
                 System.out.println("Erfolgreich umgelagert");
+                umlagernErfolgreich = true;
                 belohnung -= 100;
             }
         }
@@ -503,10 +583,12 @@ public class Abwicklung extends Component {
             if (!la.isEmpty(zX, zY, 0)) {
                 //Vor dem Zielprodukt ist ein anderes Produkt
                 JOptionPane.showMessageDialog(null, "Das ausgewählte Produkt wird von einem anderen Produkt blockiert", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                umlagernErfolgreich = false;
             } else {
                 //tausche
                 la.tauscheProdukt(x, y, z, zX, zY, zZ);
                 System.out.println("Erfolgreich umgelagert");
+                umlagernErfolgreich = true;
                 belohnung -= 100;
             }
         } else if (z == 0 && zZ == 1) {
@@ -514,15 +596,18 @@ public class Abwicklung extends Component {
                 //tausche
                 la.tauscheProdukt(x, y, z, zX, zY, zZ);
                 System.out.println("Erfolgreich umgelagert");
+                umlagernErfolgreich = true;
                 belohnung -= 100;
             } else {
                 if (!la.isEmpty(zX, zY, 0)) {
                     //Vor dem Zielprodukt ist ein anderes Produkt
                     JOptionPane.showMessageDialog(null, "Das ausgewählte Produkt wird von einem anderen Produkt blockiert", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     //tausche
                     la.tauscheProdukt(x, y, z, zX, zY, zZ);
                     System.out.println("Erfolgreich umgelagert");
+                    umlagernErfolgreich = true;
                     belohnung -= 100;
                 }
             }
@@ -532,15 +617,18 @@ public class Abwicklung extends Component {
                 //Tausche
                 la.tauscheProdukt(x, y, z, zX, zY, zZ);
                 System.out.println("Erfolgreich umgelagert");
+                umlagernErfolgreich = true;
                 belohnung -= 100;
             } else {
                 if (!la.isEmpty(x, y, 0)) {
                     //Aktuelle produkt wird blockiert
                     JOptionPane.showMessageDialog(null, "Das ausgewählte Produkt wird von einem anderen Produkt blockiert", "Fehler: Umlagerung", JOptionPane.ERROR_MESSAGE);
+                    umlagernErfolgreich = false;
                 } else {
                     //tausche
                     la.tauscheProdukt(x, y, z, zX, zY, zZ);
                     System.out.println("Erfolgreich umgelagert");
+                    umlagernErfolgreich = true;
                     belohnung -= 100;
                 }
             }
@@ -548,9 +636,11 @@ public class Abwicklung extends Component {
             //tausche
             la.tauscheProdukt(x, y, z, zX, zY, zZ);
             System.out.println("Erfolgreich umgelagert");
+            umlagernErfolgreich = true;
             belohnung -= 100;
         }
     }
 
 
 }
+

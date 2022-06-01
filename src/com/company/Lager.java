@@ -54,6 +54,7 @@ public class Lager {
         return gefunden;
     }
 
+
     public String getSearchedName() {
         return searchedName;
     }
