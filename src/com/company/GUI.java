@@ -4,13 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 
 public class GUI extends Component {
-    private final JButton[][][] btnLager;
+    protected final JButton[][][] btnLager;
     private final JButton btnNaechsterEintrag;
     private final JButton btnUmlagern;
     private final JButton btnVerschrotten;
@@ -545,7 +546,8 @@ public class GUI extends Component {
             btnBearbeitenIsPressed = false;
         } else if (btnVerschrottenIsPressed && btnFlaecheIsPressed) {
             lblBelohnung.setText("Belohnung: " + (aw.getBelohnung() - 300));
-            aw.verschrotten(i,x, y, z);
+            aw.verschrotten(x, y, z);
+            System.out.println(x+" "+y+" "+z);
             if (btnLager[x][y][z].getText().charAt(0)== 'H') {
                 btnLager[x][y][0].setText(" ");
                 btnLager[x][y][1].setText(" ");
@@ -625,8 +627,10 @@ public class GUI extends Component {
                         } else if (z == 1 && vZ == 0) {
                             var vorher = btnLager[vX][vY][vZ].getText();
                             var aktuell = btnLager[x][y][z].getText();
-                            btnLager[x][y][z].setText(vorher);
-                            btnLager[x][y][z].setText(aktuell);
+                            btnLager[x][y][0].setText(vorher);
+                            btnLager[x][y][1].setText(vorher);
+                            btnLager[vX][vY][0].setText(aktuell);
+                            btnLager[vX][vY][1].setText(" ");
 
                         } else if (z == 1 && vZ == 1) {
                             var vorher = btnLager[vX][vY][vZ].getText();
