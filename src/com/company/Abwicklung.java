@@ -5,13 +5,14 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class Abwicklung extends Component {
+public class Abwicklung{
     private final Lager la;
     private final List<Produkte> l;
     private int belohnung;
     private boolean einlagerungErfolgreich;
     private boolean auslagerungErfolgreich;
     private boolean umlagernErfolgreich;
+
 
 
     public Abwicklung() {
@@ -50,6 +51,8 @@ public class Abwicklung extends Component {
                 } else if (Objects.equals(l.get(i).getName(), "Papier")) {
                     einlagernPapier(i, x, y, z);
                 }
+
+
             }
 
 
@@ -78,17 +81,19 @@ public class Abwicklung extends Component {
         return belohnung;
     }
 
-    public void verschrotten(int i, int x, int y, int z) {
+    public void verschrotten(int x, int y, int z) {
         if (la.isEmpty(x, y, z)) {
             JOptionPane.showMessageDialog(null, "Prdoukt kann nicht verschrottet werden, da die Palette leer ist.", "Fehler: Verschrotten", JOptionPane.ERROR_MESSAGE);
         } else {
-            if (Objects.equals(l.get(i).getName(), "Holz")) {
-                la.insertProduct(x, y, 1, null);
-                la.insertProduct(x, y, 0, null);
+            var name= x+y+z;
+            //TODO: Nur bei Brettern
+            if (Objects.equals(la.getProduktName(x,y,z), "Holz")) {
+                la.insertProduct(x, y, 1,null);
+                la.insertProduct(x, y, 0,null);
                 JOptionPane.showMessageDialog(null, "Das ausgewählte Produkt wurde für 300 Geldeinheiten verschrottet.", "Info: Verschrotten", JOptionPane.INFORMATION_MESSAGE);
                 belohnung -= 300;
             } else {
-                la.insertProduct(x, y, z, null);
+                la.insertProduct(x, y, z,null);
                 JOptionPane.showMessageDialog(null, "Das ausgewählte Produkt wurde für 300 Geldeinheiten verschrottet.", "Info: Verschrotten", JOptionPane.INFORMATION_MESSAGE);
                 belohnung -= 300;
             }
@@ -341,7 +346,7 @@ public class Abwicklung extends Component {
         }
 
         //Zielprodukt Stein
-        if (Objects.equals(la.getProdukt(zX, zY, zZ).getName(), "Stein")) {
+        else if (Objects.equals(la.getProdukt(zX, zY, zZ).getName(), "Stein")) {
             if (Objects.equals(la.getProdukt(zX, zY, zZ).getAttribute2(), "Schwer")) {
                 if (y != 0) {
                     //Stein zu schwer, kann  nicht getauscht werden
@@ -364,7 +369,7 @@ public class Abwicklung extends Component {
         }
 
         //Zielprodukt Holz
-        if (Objects.equals(la.getProdukt(zX, zY, zZ).getName(), "Holz")) {
+        else if (Objects.equals(la.getProdukt(zX, zY, zZ).getName(), "Holz")) {
             la.tauscheProdukt(x, y, 1, zX, zY, 1);
             la.tauscheProdukt(x, y, 0, zX, zY, 0);
             System.out.println("Erfolgreich umgelagert");

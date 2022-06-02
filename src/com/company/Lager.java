@@ -24,9 +24,8 @@ public class Lager {
         } else isEmpty = false;
         return isEmpty;
     }
-
-    public Produkte[][][] getLager() {
-        return Lager;
+    public String  getProduktName(int x, int y, int z) {
+        return Lager[x][y][z].getName();
     }
 
     public void insertProduct(int x, int y, int z, Produkte produkte) {
