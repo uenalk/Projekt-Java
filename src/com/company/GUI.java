@@ -423,8 +423,12 @@ public class GUI extends Component {
             if (Objects.equals(l.get(i).getAuftragsart(), "Einlagerung")) {
                 if (aw.einlagerungErfolgreich()) {
                     if (Objects.equals(l.get(i).getName(), "Holz")) {
-                        btnLager[x][y][1].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
-                        btnLager[x][y][0].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
+                        if((Objects.equals(l.get(i).getAttribute2(), "Balken"))){
+                            btnLager[x][y][1].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
+                            btnLager[x][y][0].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
+                        }else{
+                            btnLager[x][y][z].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
+                        }
                     } else if (Objects.equals(l.get(i).getName(), "Papier")) {
                         btnLager[x][y][z].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
                     } else if (Objects.equals(l.get(i).getName(), "Stein")) {
@@ -451,13 +455,13 @@ public class GUI extends Component {
                     btnFachB.setBorderPainted(true);
 
 
-                    btnNaechsterEintrag.setEnabled(false);
+                    btnNaechsterEintrag.setEnabled(true);
                     btnNaechsterEintrag.setBorderPainted(true);
 
-                    btnAuftragBearbeiten.setEnabled(false);
+                    btnAuftragBearbeiten.setEnabled(true);
                     btnAuftragBearbeiten.setBorderPainted(true);
 
-                    btnAuftragAblehnen.setEnabled(false);
+                    btnAuftragAblehnen.setEnabled(true);
                     btnAuftragAblehnen.setBorderPainted(true);
 
                     lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
@@ -545,10 +549,12 @@ public class GUI extends Component {
             btnFlaecheIsPressed = false;
             btnBearbeitenIsPressed = false;
         } else if (btnVerschrottenIsPressed && btnFlaecheIsPressed) {
+            String[] infos = btnLager[x][y][z].getText().split(" ");
+            String splitedName = infos[0];
+            String attribut2 = infos[2];
             lblBelohnung.setText("Belohnung: " + (aw.getBelohnung() - 300));
             aw.verschrotten(x, y, z);
-            System.out.println(x+" "+y+" "+z);
-            if (btnLager[x][y][z].getText().charAt(0)== 'H') {
+            if (Objects.equals(splitedName, "Holz") && Objects.equals(attribut2, "Balken")) {
                 btnLager[x][y][0].setText(" ");
                 btnLager[x][y][1].setText(" ");
                 btnVerschrottenIsPressed = false;
@@ -567,15 +573,23 @@ public class GUI extends Component {
             vZ = z;
             waehlequelle = false;
 
-        } else if (btnUmlagernIsPressed && !waehlequelle) { //Soll bearbeitet werden
+        } else if (btnUmlagernIsPressed && !waehlequelle) {
             aw.umlagern(vX, vY, vZ, x, y, z);
             if (aw.umlagernErfolgreich()) {
-                if (btnLager[vX][vY][vZ].getText().charAt(0) != 'H') {
-                    if (btnLager[x][y][z].getText().charAt(0) != 'H') {
+                String[] infos = btnLager[x][y][z].getText().split(" ");
+                String attribut2 = infos[2];
+                String[] Vinfos = btnLager[vX][vY][vZ].getText().split(" ");
+                String Vattribut2 = Vinfos[2];
+                //Wenn ausgewähltes Produkt keine Balken
+                if (!Objects.equals(Vattribut2, "Balken")) {
+                    //Wenn Zielprodukt kein Balken
+                    if (!Objects.equals(attribut2, "Balken")) {
                         var temp = btnLager[vX][vY][vZ].getText();
                         btnLager[vX][vY][vZ].setText(btnLager[x][y][z].getText());
                         btnLager[x][y][z].setText(temp);
-                    } else {
+                    }
+                    //Wenn Zielprodukt Balken
+                    else {
                         if (z == 0 && vZ == 0) {
                             var temp = btnLager[vX][vY][vZ].getText();
                             btnLager[vX][vY][0].setText(btnLager[x][y][z].getText());
@@ -606,8 +620,11 @@ public class GUI extends Component {
 
                         }
                     }
-                } else {
-                    if (btnLager[x][y][z].getText().charAt(0) != 'H') {
+                }
+                //Wenn ausgewähltes Produkt Balken
+                else {
+                    //Wenn Zielprodukt keine Balken [Muss überarbeitet werden]
+                    if (!Objects.equals(attribut2, "Balken")) {
                         if (z == 0 && vZ == 0) {
                             var vorher = btnLager[vX][vY][vZ].getText();
                             var aktuell = btnLager[x][y][z].getText();
@@ -642,12 +659,13 @@ public class GUI extends Component {
 
                         }
 
-                    } else {
+                    }
+                    //Wenn Zielprodukt Bretter
+                    else {
                         var vorher = btnLager[vX][vY][vZ].getText();
                         var aktuell = btnLager[x][y][z].getText();
                         btnLager[vX][vY][1].setText(aktuell);
                         btnLager[vX][vY][0].setText(aktuell);
-
                         btnLager[x][y][0].setText(vorher);
                         btnLager[x][y][1].setText(vorher);
                     }
