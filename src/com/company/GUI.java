@@ -423,10 +423,10 @@ public class GUI extends Component {
             if (Objects.equals(l.get(i).getAuftragsart(), "Einlagerung")) {
                 if (aw.einlagerungErfolgreich()) {
                     if (Objects.equals(l.get(i).getName(), "Holz")) {
-                        if((Objects.equals(l.get(i).getAttribute2(), "Balken"))){
+                        if ((Objects.equals(l.get(i).getAttribute2(), "Balken"))) {
                             btnLager[x][y][1].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
                             btnLager[x][y][0].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
-                        }else{
+                        } else {
                             btnLager[x][y][z].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
                         }
                     } else if (Objects.equals(l.get(i).getName(), "Papier")) {
@@ -575,7 +575,54 @@ public class GUI extends Component {
 
         } else if (btnUmlagernIsPressed && !waehlequelle) {
             aw.umlagern(vX, vY, vZ, x, y, z);
-            if (aw.umlagernErfolgreich()) {
+            if (aw.umlagernLeerePalette()) {
+                String[] Vinfos = btnLager[vX][vY][vZ].getText().split(" ");
+                String Vattribut2 = Vinfos[2];
+                String Vname = Vinfos[0];
+                //Aktuell Papier, Stein oder Holz aber kein Balken
+                if (Objects.equals(Vname, "Papier") || Objects.equals(Vname, "Stein") || (Objects.equals(Vname, "Holz") && !Objects.equals(Vattribut2, "Balken"))) {
+                    var vorher = btnLager[vX][vY][vZ].getText();
+                    btnLager[vX][vY][vZ].setText(" ");
+                    btnLager[x][y][z].setText(vorher);
+
+                }
+                //Aktuell Balken    //TODO: Anschauen
+                else {
+                    if (z == 0 && vZ == 0) {
+                        var temp = btnLager[vX][vY][vZ].getText();
+                        btnLager[vX][vY][vZ].setText(btnLager[x][y][z].getText());
+                        btnLager[x][y][z].setText(temp);
+                        btnLager[vX][vY][1].setText(" ");
+                        btnLager[x][y][1].setText(temp);
+
+                    } else if (z == 0 && vZ == 1) {
+                        var vorher = btnLager[vX][vY][vZ].getText();
+                        var aktuell = btnLager[x][y][z].getText();
+                        btnLager[vX][vY][1].setText(aktuell);
+                        btnLager[x][y][z].setText(vorher);
+                        btnLager[vX][vY][0].setText(" ");
+                        btnLager[x][y][1].setText(aktuell);
+                    } else if (z == 1 && vZ == 0) {
+                        var temp = btnLager[vX][vY][vZ].getText();
+                        var aktuell= btnLager[x][y][z].getText();
+                        btnLager[vX][vY][vZ].setText(aktuell);
+                        btnLager[x][y][z].setText(temp);
+                        btnLager[vX][vY][1].setText(" ");
+                        btnLager[x][y][0].setText(temp);
+
+                    } else if (z == 1 && vZ == 1) {
+                        var temp = btnLager[vX][vY][vZ].getText();
+                        var aktuell = btnLager[x][y][z].getText();
+                        btnLager[vX][vY][1].setText(aktuell);
+                        btnLager[x][y][z].setText(temp);
+                        btnLager[vX][vY][0].setText(" ");
+                        btnLager[x][y][0].setText(temp);
+
+                    }
+                }
+            }
+
+            else if (aw.umlagernErfolgreich()) {
                 String[] infos = btnLager[x][y][z].getText().split(" ");
                 String attribut2 = infos[2];
                 String[] Vinfos = btnLager[vX][vY][vZ].getText().split(" ");
@@ -660,7 +707,7 @@ public class GUI extends Component {
                         }
 
                     }
-                    //Wenn Zielprodukt Bretter
+                    //Wenn Zielprodukt Balken
                     else {
                         var vorher = btnLager[vX][vY][vZ].getText();
                         var aktuell = btnLager[x][y][z].getText();
@@ -678,6 +725,7 @@ public class GUI extends Component {
 
     }
 }
+
 
 
 
