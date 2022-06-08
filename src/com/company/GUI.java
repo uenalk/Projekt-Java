@@ -145,6 +145,11 @@ public class GUI extends Component {
         JPanel rechts = new JPanel();
         JPanel mainInhalt = new JPanel();
 
+        btnAuftragAblehnen.setEnabled(false);
+        btnAuftragBearbeiten.setEnabled(false);
+        btnUmlagern.setEnabled(false);
+        btnVerschrotten.setEnabled(false);
+
 
         //Eigenschaften der Elemente
         oben.setBackground(Color.white);
@@ -263,6 +268,8 @@ public class GUI extends Component {
                 btnLager[i][j][0].setEnabled(true);
             }
         }
+
+        auftragsLabelRefresh();
     }
 
     private void pressedUmlagern(ActionEvent e) {
@@ -282,10 +289,10 @@ public class GUI extends Component {
             }
         }
 
+        auftragsLabelRefresh();
     }
 
     private void pressedBearbeiten(ActionEvent e) {
-        if(btnNaechsterEintragIsPressed){
             btnAuftragAblehnen.setBorderPainted(true);
             btnAuftragAblehnen.setEnabled(true);
             btnAuftragBearbeiten.setEnabled(true);
@@ -294,11 +301,7 @@ public class GUI extends Component {
             btnBearbeitenIsPressed = true;
             btnNaechsterEintragIsPressed=false;
 
-            lblProduktname.setText("Produktart: " + l.get(i).getName());
-            lblAuftragsart.setText("Auftragsart: " + l.get(i).getAuftragsart());
-            lblAttribut1.setText("1.Eigenschaft: " + l.get(i).getAttribute1());
-            lblAttribut2.setText("2.Eigenschaft: " + l.get(i).getAttribute2());
-            lblWert.setText("Wert: " + l.get(i).getBelohnung());
+        auftragsLabelRefresh();
 
             for (Integer j = 2; j > -1; j--) {
                 for (Integer i = 0; i < 4; i++) {
@@ -311,9 +314,6 @@ public class GUI extends Component {
                     btnLager[i][j][0].setEnabled(true);
                 }
             }
-        }else{
-            JOptionPane.showMessageDialog(null,"Drücken Sie auf 'Nächster Eintrag' Button, damit Sie den Auftrag bearbeiten können","Zugriff blockiert",JOptionPane.ERROR_MESSAGE);
-        }
 
 
 
@@ -322,7 +322,7 @@ public class GUI extends Component {
     private void pressedAblehnen(ActionEvent e) {
         
         JOptionPane.showMessageDialog(null, "Als Vertragsstrafe wird die Belohnung vom Kontostand abgezogen", "Vertragsstrafe", JOptionPane.INFORMATION_MESSAGE);
-        belohnung = aw.getBelohnung() - l.get(i).getBelohnung();
+        aw.setBelohnung(belohnung = aw.getBelohnung() - l.get(i).getBelohnung());
         fach[ausgewaehltesFach] = i = -1;
         auftragsLabelRefresh();
 
@@ -338,15 +338,15 @@ public class GUI extends Component {
     }
 
     private void auftragsLabelRefresh() {
-
+        boolean auswahlAktiv = !btnBearbeitenIsPressed && !btnUmlagernIsPressed && !btnVerschrottenIsPressed;
         if (l != null && i > -1) {
             lblProduktname.setText("Produktart: " + l.get(i).getName());
             lblAuftragsart.setText("Auftragsart: " + l.get(i).getAuftragsart());
             lblAttribut1.setText("1.Eigenschaft: " + l.get(i).getAttribute1());
             lblAttribut2.setText("2.Eigenschaft: " + l.get(i).getAttribute2());
             lblWert.setText("Wert: " + l.get(i).getBelohnung());
-            btnAuftragBearbeiten.setEnabled(true);
-            btnAuftragAblehnen.setEnabled(true);
+            btnAuftragBearbeiten.setEnabled(!btnBearbeitenIsPressed && !btnUmlagernIsPressed && !btnVerschrottenIsPressed);
+            btnAuftragAblehnen.setEnabled(!btnBearbeitenIsPressed && !btnUmlagernIsPressed && !btnVerschrottenIsPressed);
             btnNaechsterEintrag.setEnabled(false);
         } else {
             lblProduktname.setText("Produktart: ");
@@ -356,8 +356,13 @@ public class GUI extends Component {
             lblWert.setText("Wert: ");
             btnAuftragBearbeiten.setEnabled(false);
             btnAuftragAblehnen.setEnabled(false);
-            btnNaechsterEintrag.setEnabled(true);
+            btnNaechsterEintrag.setEnabled(auswahlAktiv);
         }
+
+        btnVerschrotten.setEnabled(auswahlAktiv);
+        btnUmlagern.setEnabled(auswahlAktiv);
+        cmbbox.setEnabled(auswahlAktiv);
+        lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
     }
 
     public void ButtonPressed(ActionEvent e) {
@@ -401,16 +406,8 @@ public class GUI extends Component {
                     }
 
 
-                    btnNaechsterEintrag.setEnabled(true);
-                    btnNaechsterEintrag.setBorderPainted(true);
-
-                    btnAuftragBearbeiten.setEnabled(true);
-                    btnAuftragBearbeiten.setBorderPainted(true);
-
-                    btnAuftragAblehnen.setEnabled(true);
-                    btnAuftragAblehnen.setBorderPainted(true);
-
-                    lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
+                    fach[ausgewaehltesFach] = i = -1;
+                    auftragsLabelRefresh();
                     i++;
                 } else {
                     for (Integer j = 2; j > -1; j--) {
@@ -425,8 +422,6 @@ public class GUI extends Component {
                         }
                     }
                     btnBearbeitenIsPressed = true;
-                    btnUmlagern.setEnabled(true);
-                    btnVerschrotten.setEnabled(true);
 
                 }
             } else if (Objects.equals(l.get(i).getAuftragsart(), "Auslagerung")) {
@@ -447,15 +442,7 @@ public class GUI extends Component {
                             btnLager[i][j][0].setEnabled(false);
                         }
                     }
-                    btnNaechsterEintrag.setEnabled(false);
-                    btnNaechsterEintrag.setBorderPainted(true);
 
-                    btnAuftragBearbeiten.setEnabled(false);
-                    btnAuftragBearbeiten.setBorderPainted(true);
-
-                    btnAuftragAblehnen.setEnabled(false);
-                    btnAuftragAblehnen.setBorderPainted(true);
-                    lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
                 } else {
                     btnBearbeitenIsPressed = false;
                     for (Integer j = 2; j > -1; j--) {
@@ -477,6 +464,7 @@ public class GUI extends Component {
                 }
             }
 
+            fach[ausgewaehltesFach] = i = -1;
             btnFlaecheIsPressed = false;
             btnBearbeitenIsPressed = false;
         } else if (btnVerschrottenIsPressed && btnFlaecheIsPressed) {
@@ -518,7 +506,6 @@ public class GUI extends Component {
                     var vorher = btnLager[vX][vY][vZ].getText();
                     btnLager[vX][vY][vZ].setText(" ");
                     btnLager[x][y][z].setText(vorher);
-                    lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
 
                 }
                 //Aktuell Balken    //TODO: Anschauen
@@ -554,7 +541,6 @@ public class GUI extends Component {
                         btnLager[x][y][0].setText(temp);
 
                     }
-                    lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
                 }
             }
 
@@ -570,7 +556,6 @@ public class GUI extends Component {
                         var temp = btnLager[vX][vY][vZ].getText();
                         btnLager[vX][vY][vZ].setText(btnLager[x][y][z].getText());
                         btnLager[x][y][z].setText(temp);
-                        lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
                     }
                     //Wenn Zielprodukt Balken
                     else {
@@ -603,7 +588,6 @@ public class GUI extends Component {
                             btnLager[x][y][0].setText(" ");
 
                         }
-                        lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
                     }
                 }
                 //Wenn ausgewähltes Produkt Balken
@@ -643,7 +627,6 @@ public class GUI extends Component {
                             btnLager[x][y][1].setText(vorher);
 
                         }
-                        lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
 
                     }
                     //Wenn Zielprodukt Balken
@@ -654,7 +637,6 @@ public class GUI extends Component {
                         btnLager[vX][vY][0].setText(aktuell);
                         btnLager[x][y][0].setText(vorher);
                         btnLager[x][y][1].setText(vorher);
-                        lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
                     }
                 }
 
@@ -662,7 +644,7 @@ public class GUI extends Component {
             btnUmlagernIsPressed = false;
         }
 
-
+        auftragsLabelRefresh();
     }
 
 }

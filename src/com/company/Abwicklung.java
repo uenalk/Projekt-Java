@@ -77,8 +77,12 @@ public class Abwicklung {
     }
 
 
-    public Integer getBelohnung() {
+    public int getBelohnung() {
         return belohnung;
+    }
+
+    public void setBelohnung(int belohnung) {
+        this.belohnung = belohnung;
     }
 
     public void verschrotten(int x, int y, int z) {
