@@ -216,14 +216,14 @@ public class GUI extends Component {
         //Startzustände
 
 
-        for (Integer j = 2; j > -1; j--) {
-            for (Integer i = 0; i < 4; i++) {
+        for (int j = 2; j > -1; j--) {
+            for (int i = 0; i < 4; i++) {
                 btnLager[i][j][1].setEnabled(false);
             }
         }
 
-        for (Integer j = 2; j > -1; j--) {
-            for (Integer i = 0; i < 4; i++) {
+        for (int j = 2; j > -1; j--) {
+            for (int i = 0; i < 4; i++) {
                 btnLager[i][j][0].setEnabled(false);
             }
         }
@@ -235,6 +235,7 @@ public class GUI extends Component {
         btnAuftragBearbeiten.addActionListener(this::pressedBearbeiten);
         btnUmlagern.addActionListener(this::pressedUmlagern);
         btnVerschrotten.addActionListener(this::pressedVerschrotten);
+        btnBilanz.addActionListener(this::oeffneBilanz);
 
         frame.setSize(1000, 1000);
         frame.setVisible(true);
@@ -252,19 +253,30 @@ public class GUI extends Component {
         }
     }
 
+    private  void oeffneBilanz(ActionEvent e) {
+        BilanzGUI gui = new BilanzGUI(aw.getKontoverlauf());
+        JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(this));
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setSize(300, 400);
+        dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        dialog.setContentPane(gui.getContent());
+        gui.prepareContent();
+
+        dialog.setVisible(true);
+    }
 
     private void pressedVerschrotten(ActionEvent e) {
         btnBearbeitenIsPressed=false;
         btnUmlagernIsPressed=false;
         btnVerschrottenIsPressed = true;
-        for (Integer j = 2; j > -1; j--) {
-            for (Integer i = 0; i < 4; i++) {
+        for (int j = 2; j > -1; j--) {
+            for (int i = 0; i < 4; i++) {
                 btnLager[i][j][1].setEnabled(true);
             }
         }
 
-        for (Integer j = 2; j > -1; j--) {
-            for (Integer i = 0; i < 4; i++) {
+        for (int j = 2; j > -1; j--) {
+            for (int i = 0; i < 4; i++) {
                 btnLager[i][j][0].setEnabled(true);
             }
         }
@@ -277,14 +289,14 @@ public class GUI extends Component {
         btnBearbeitenIsPressed = false;
         btnVerschrottenIsPressed=false;
         waehlequelle = true;
-        for (Integer j = 2; j > -1; j--) {
-            for (Integer i = 0; i < 4; i++) {
+        for (int j = 2; j > -1; j--) {
+            for (int i = 0; i < 4; i++) {
                 btnLager[i][j][1].setEnabled(true);
             }
         }
 
-        for (Integer j = 2; j > -1; j--) {
-            for (Integer i = 0; i < 4; i++) {
+        for (int j = 2; j > -1; j--) {
+            for (int i = 0; i < 4; i++) {
                 btnLager[i][j][0].setEnabled(true);
             }
         }
@@ -303,14 +315,14 @@ public class GUI extends Component {
 
         auftragsLabelRefresh();
 
-            for (Integer j = 2; j > -1; j--) {
-                for (Integer i = 0; i < 4; i++) {
+            for (int j = 2; j > -1; j--) {
+                for (int i = 0; i < 4; i++) {
                     btnLager[i][j][1].setEnabled(true);
                 }
             }
 
-            for (Integer j = 2; j > -1; j--) {
-                for (Integer i = 0; i < 4; i++) {
+            for (int j = 2; j > -1; j--) {
+                for (int i = 0; i < 4; i++) {
                     btnLager[i][j][0].setEnabled(true);
                 }
             }
@@ -393,14 +405,14 @@ public class GUI extends Component {
                         btnLager[x][y][z].setText(l.get(i).getName() + " " + l.get(i).getAttribute1() + " " + l.get(i).getAttribute2());
                     }
 
-                    for (Integer j = 2; j > -1; j--) {
-                        for (Integer i = 0; i < 4; i++) {
+                    for (int j = 2; j > -1; j--) {
+                        for (int i = 0; i < 4; i++) {
                             btnLager[i][j][1].setEnabled(false);
                         }
                     }
 
-                    for (Integer j = 2; j > -1; j--) {
-                        for (Integer i = 0; i < 4; i++) {
+                    for (int j = 2; j > -1; j--) {
+                        for (int i = 0; i < 4; i++) {
                             btnLager[i][j][0].setEnabled(false);
                         }
                     }
@@ -410,14 +422,14 @@ public class GUI extends Component {
                     auftragsLabelRefresh();
                     i++;
                 } else {
-                    for (Integer j = 2; j > -1; j--) {
-                        for (Integer i = 0; i < 4; i++) {
+                    for (int j = 2; j > -1; j--) {
+                        for (int i = 0; i < 4; i++) {
                             btnLager[i][j][1].setEnabled(false);
                         }
                     }
 
-                    for (Integer j = 2; j > -1; j--) {
-                        for (Integer i = 0; i < 4; i++) {
+                    for (int j = 2; j > -1; j--) {
+                        for (int i = 0; i < 4; i++) {
                             btnLager[i][j][0].setEnabled(false);
                         }
                     }
@@ -431,28 +443,28 @@ public class GUI extends Component {
                         btnLager[x][y][0].setText(" ");
                     } else btnLager[x][y][z].setText(" ");
 
-                    for (Integer j = 2; j > -1; j--) {
-                        for (Integer i = 0; i < 4; i++) {
+                    for (int j = 2; j > -1; j--) {
+                        for (int i = 0; i < 4; i++) {
                             btnLager[i][j][1].setEnabled(false);
                         }
                     }
 
-                    for (Integer j = 2; j > -1; j--) {
-                        for (Integer i = 0; i < 4; i++) {
+                    for (int j = 2; j > -1; j--) {
+                        for (int i = 0; i < 4; i++) {
                             btnLager[i][j][0].setEnabled(false);
                         }
                     }
 
                 } else {
                     btnBearbeitenIsPressed = false;
-                    for (Integer j = 2; j > -1; j--) {
-                        for (Integer i = 0; i < 4; i++) {
+                    for (int j = 2; j > -1; j--) {
+                        for (int i = 0; i < 4; i++) {
                             btnLager[i][j][1].setEnabled(false);
                         }
                     }
 
-                    for (Integer j = 2; j > -1; j--) {
-                        for (Integer i = 0; i < 4; i++) {
+                    for (int j = 2; j > -1; j--) {
+                        for (int i = 0; i < 4; i++) {
                             btnLager[i][j][0].setEnabled(false);
                         }
                     }

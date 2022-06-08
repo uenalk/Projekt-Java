@@ -15,7 +15,7 @@ public class CSVListe {
 
         //1.Zeile von CSV Datei überspringen
         try {
-            BufferedReader rd = new BufferedReader(new FileReader("src/Leistungsnachweis.csv"));
+            BufferedReader rd = new BufferedReader(new FileReader("Leistungsnachweis.csv"));
 
             for (int i = 0; i < 1; i++) {
                 rd.readLine(); //Skipt 1.Zeile
