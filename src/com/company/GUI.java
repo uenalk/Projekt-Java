@@ -124,7 +124,7 @@ public class GUI extends Component {
 
 
         //Eigenschaften
-        lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
+        lblBelohnung.setText("Belohnung: 0");
         belohnung.setBackground(Color.gray);
         btnBilanz.setBackground(Color.gray);
         panel5.setBackground(Color.blue);
@@ -322,7 +322,7 @@ public class GUI extends Component {
     private void pressedAblehnen(ActionEvent e) {
         
         JOptionPane.showMessageDialog(null, "Als Vertragsstrafe wird die Belohnung vom Kontostand abgezogen", "Vertragsstrafe", JOptionPane.INFORMATION_MESSAGE);
-        aw.setBelohnung(belohnung = aw.getBelohnung() - l.get(i).getBelohnung());
+        aw.aendereKontostand(-l.get(i).getBelohnung(), "Auftrag abgelehnt");
         fach[ausgewaehltesFach] = i = -1;
         auftragsLabelRefresh();
 
@@ -362,7 +362,7 @@ public class GUI extends Component {
         btnVerschrotten.setEnabled(auswahlAktiv);
         btnUmlagern.setEnabled(auswahlAktiv);
         cmbbox.setEnabled(auswahlAktiv);
-        lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
+        lblBelohnung.setText("Belohnung: " + aw.getKontostand());
     }
 
     public void ButtonPressed(ActionEvent e) {
@@ -470,7 +470,6 @@ public class GUI extends Component {
         } else if (btnVerschrottenIsPressed && btnFlaecheIsPressed) {
             try{
                 aw.verschrotten(x, y, z);
-                lblBelohnung.setText("Belohnung: " + (aw.getBelohnung() - 300));
                 String[] infos = btnLager[x][y][z].getText().split(" ");
                 String splitedName = infos[0];
                 String attribut2 = infos[2];
@@ -484,7 +483,7 @@ public class GUI extends Component {
                     btnVerschrottenIsPressed = false;
                     btnFlaecheIsPressed = false;
                 }
-                lblBelohnung.setText("Belohnung: " + aw.getBelohnung());
+                lblBelohnung.setText("Belohnung: " + aw.getKontostand());
             }catch(Exception ex){
                 JOptionPane.showMessageDialog(null,"Wählen Sie keine leere Paletten aus.","Info: Palette",JOptionPane.INFORMATION_MESSAGE);
             }
