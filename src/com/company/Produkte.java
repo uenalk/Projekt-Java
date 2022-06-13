@@ -17,10 +17,6 @@ public class Produkte {
         this.belohnung = belohnung;
     }
 
-    public int getAuftragID() {
-        return auftragID;
-    }
-
     public String getAuftragsart() {
         return auftragsart;
     }

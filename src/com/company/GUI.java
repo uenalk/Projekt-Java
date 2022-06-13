@@ -260,7 +260,7 @@ public class GUI extends Component {
         dialog.setSize(300, 400);
         dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setContentPane(gui.getContent());
-        gui.prepareContent();
+        gui.inhalt();
 
         dialog.setVisible(true);
     }
@@ -438,7 +438,7 @@ public class GUI extends Component {
                 }
             } else if (Objects.equals(l.get(i).getAuftragsart(), "Auslagerung")) {
                 if (aw.auslagerungErfolgreich()) {
-                    if (Objects.equals(l.get(i).getName(), "Holz")) {
+                    if (Objects.equals(l.get(i).getAttribute2(), "Balken")) {
                         btnLager[x][y][1].setText(" ");
                         btnLager[x][y][0].setText(" ");
                     } else btnLager[x][y][z].setText(" ");
@@ -519,7 +519,7 @@ public class GUI extends Component {
                     btnLager[x][y][z].setText(vorher);
 
                 }
-                //Aktuell Balken    //TODO: Anschauen
+                //Aktuell Balken
                 else {
                     if (z == 0 && vZ == 0) {
                         var temp = btnLager[vX][vY][vZ].getText();

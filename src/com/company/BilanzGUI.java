@@ -26,7 +26,7 @@ public class BilanzGUI {
         this.eintraege = eintraege;
     }
 
-    public void prepareContent() {
+    public void inhalt() {
         Integer umsatz = 0, kosten = 0;
 
         DefaultTableModel tabellenModell = (DefaultTableModel) bilanzTabelle.getModel();
